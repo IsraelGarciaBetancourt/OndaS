@@ -1,0 +1,941 @@
+{
+  "items": [
+    {
+      "name": "Radio_Retro",
+      "category": "Good Items",
+      "source": "TV y Radio/models/RADIO.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Radio_Retro/Prefabs/Radio_Retro.prefab",
+      "meshes": 1,
+      "triangles": 347,
+      "size": {
+        "x": 0.2978147268295288,
+        "y": 0.4000000059604645,
+        "z": 0.1418062001466751
+      }
+    },
+    {
+      "name": "Televisor_CRT",
+      "category": "Bad Items",
+      "source": "TV y Radio/models/CRTTV.glb",
+      "prefab": "Assets/OndaS/Items/Bad Items/Televisor_CRT/Prefabs/Televisor_CRT.prefab",
+      "meshes": 1,
+      "triangles": 98,
+      "size": {
+        "x": 0.800000011920929,
+        "y": 0.5950000286102295,
+        "z": 0.5299999713897705
+      }
+    },
+    {
+      "name": "Linterna",
+      "category": "Good Items",
+      "source": "Linterna y Radio/HorrorKit-V2.0/Mesh/GLB_GLTF/HorrorKit-2.0.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Linterna/Prefabs/Linterna.prefab",
+      "meshes": 2,
+      "triangles": 604,
+      "size": {
+        "x": 0.23999997973442078,
+        "y": 0.06363420933485031,
+        "z": 0.10510135442018509
+      }
+    },
+    {
+      "name": "Radio_Horror",
+      "category": "Good Items",
+      "source": "Linterna y Radio/HorrorKit-V2.0/Mesh/GLB_GLTF/HorrorKit-2.0.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Radio_Horror/Prefabs/Radio_Horror.prefab",
+      "meshes": 9,
+      "triangles": 1464,
+      "size": {
+        "x": 0.04089883342385292,
+        "y": 0.30000001192092896,
+        "z": 0.10319843143224716
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_01/Prefabs/Sopas_y_Caldos_01.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.1191113144159317,
+        "z": 0.08579902350902557
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_02/Prefabs/Sopas_y_Caldos_02.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.16283069550991058,
+        "y": 0.2800000011920929,
+        "z": 0.13659942150115967
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_03/Prefabs/Sopas_y_Caldos_03.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.16283060610294342,
+        "y": 0.2800000011920929,
+        "z": 0.13659940659999847
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_04/Prefabs/Sopas_y_Caldos_04.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.25616782903671265,
+        "y": 0.0942123606801033,
+        "z": 0.2800000011920929
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_05",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_05/Prefabs/Sopas_y_Caldos_05.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.11911135166883469,
+        "z": 0.08579894155263901
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_06",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_06/Prefabs/Sopas_y_Caldos_06.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.16283069550991058,
+        "y": 0.2800000011920929,
+        "z": 0.13659942150115967
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_07",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_07/Prefabs/Sopas_y_Caldos_07.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.16283060610294342,
+        "y": 0.2800000011920929,
+        "z": 0.13659942150115967
+      }
+    },
+    {
+      "name": "Sopas_y_Caldos_08",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Sopas_y_Caldos_08/Prefabs/Sopas_y_Caldos_08.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.16283060610294342,
+        "y": 0.2800000011920929,
+        "z": 0.13659942150115967
+      }
+    },
+    {
+      "name": "Hamburguesa_01",
+      "category": "Bad Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Bad Items/Alimentos/Hamburguesa_01/Prefabs/Hamburguesa_01.prefab",
+      "meshes": 1,
+      "triangles": 18,
+      "size": {
+        "x": 0.26756685972213745,
+        "y": 0.14349809288978577,
+        "z": 0.2800000011920929
+      }
+    },
+    {
+      "name": "Hamburguesa_02",
+      "category": "Bad Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Bad Items/Alimentos/Hamburguesa_02/Prefabs/Hamburguesa_02.prefab",
+      "meshes": 1,
+      "triangles": 18,
+      "size": {
+        "x": 0.2675668001174927,
+        "y": 0.14349809288978577,
+        "z": 0.2800000011920929
+      }
+    },
+    {
+      "name": "Pasta_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Pasta_01/Prefabs/Pasta_01.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.17960166931152344,
+        "y": 0.2800000011920929,
+        "z": 0.07349452376365662
+      }
+    },
+    {
+      "name": "Pasta_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Pasta_02/Prefabs/Pasta_02.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.13364149630069733,
+        "y": 0.2800000011920929,
+        "z": 0.055997334420681
+      }
+    },
+    {
+      "name": "Pasta_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Pasta_03/Prefabs/Pasta_03.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.13364148139953613,
+        "y": 0.2800000011920929,
+        "z": 0.05599731206893921
+      }
+    },
+    {
+      "name": "Pasta_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Pasta_04/Prefabs/Pasta_04.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.13364146649837494,
+        "y": 0.2800000011920929,
+        "z": 0.05599731206893921
+      }
+    },
+    {
+      "name": "Cereales_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cereales_01/Prefabs/Cereales_01.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2096361368894577,
+        "y": 0.2800000011920929,
+        "z": 0.05879157409071922
+      }
+    },
+    {
+      "name": "Cereales_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cereales_02/Prefabs/Cereales_02.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2096361368894577,
+        "y": 0.2800000011920929,
+        "z": 0.058791566640138626
+      }
+    },
+    {
+      "name": "Cereales_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cereales_03/Prefabs/Cereales_03.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2096361219882965,
+        "y": 0.2800000011920929,
+        "z": 0.058791566640138626
+      }
+    },
+    {
+      "name": "Cereales_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cereales_04/Prefabs/Cereales_04.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2096361368894577,
+        "y": 0.2800000011920929,
+        "z": 0.058791566640138626
+      }
+    },
+    {
+      "name": "Cereales_05",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cereales_05/Prefabs/Cereales_05.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2096361368894577,
+        "y": 0.2800000011920929,
+        "z": 0.058791566640138626
+      }
+    },
+    {
+      "name": "Cereales_06",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cereales_06/Prefabs/Cereales_06.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.27515432238578796,
+        "y": 0.2800000011920929,
+        "z": 0.10345305502414703
+      }
+    },
+    {
+      "name": "Leche_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Leche_01/Prefabs/Leche_01.prefab",
+      "meshes": 1,
+      "triangles": 68,
+      "size": {
+        "x": 0.09214910864830017,
+        "y": 0.2800000011920929,
+        "z": 0.09214913845062256
+      }
+    },
+    {
+      "name": "Leche_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Leche_02/Prefabs/Leche_02.prefab",
+      "meshes": 1,
+      "triangles": 84,
+      "size": {
+        "x": 0.13996538519859314,
+        "y": 0.2800000011920929,
+        "z": 0.08221522718667984
+      }
+    },
+    {
+      "name": "Leche_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Leche_03/Prefabs/Leche_03.prefab",
+      "meshes": 1,
+      "triangles": 68,
+      "size": {
+        "x": 0.09214910864830017,
+        "y": 0.2800000011920929,
+        "z": 0.09214910864830017
+      }
+    },
+    {
+      "name": "Leche_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Leche_04/Prefabs/Leche_04.prefab",
+      "meshes": 1,
+      "triangles": 84,
+      "size": {
+        "x": 0.1362060159444809,
+        "y": 0.2800000011920929,
+        "z": 0.08973412215709686
+      }
+    },
+    {
+      "name": "Leche_05",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Leche_05/Prefabs/Leche_05.prefab",
+      "meshes": 1,
+      "triangles": 76,
+      "size": {
+        "x": 0.09292525053024292,
+        "y": 0.2800000011920929,
+        "z": 0.18318027257919312
+      }
+    },
+    {
+      "name": "Leche_06",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Leche_06/Prefabs/Leche_06.prefab",
+      "meshes": 1,
+      "triangles": 60,
+      "size": {
+        "x": 0.0989375039935112,
+        "y": 0.2800000011920929,
+        "z": 0.0989375039935112
+      }
+    },
+    {
+      "name": "Galletas_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_01/Prefabs/Galletas_01.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.1756916493177414,
+        "y": 0.2800000011920929,
+        "z": 0.08743871748447418
+      }
+    },
+    {
+      "name": "Galletas_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_02/Prefabs/Galletas_02.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.24046377837657928,
+        "y": 0.2800000011920929,
+        "z": 0.11967463791370392
+      }
+    },
+    {
+      "name": "Galletas_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_03/Prefabs/Galletas_03.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.09269862622022629,
+        "y": 0.2800000011920929,
+        "z": 0.11246807128190994
+      }
+    },
+    {
+      "name": "Galletas_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_04/Prefabs/Galletas_04.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.06359733641147614,
+        "z": 0.17569155991077423
+      }
+    },
+    {
+      "name": "Galletas_05",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_05/Prefabs/Galletas_05.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.06359733641147614,
+        "z": 0.17569151520729065
+      }
+    },
+    {
+      "name": "Galletas_06",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_06/Prefabs/Galletas_06.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.04864302650094032,
+        "z": 0.0684172511100769
+      }
+    },
+    {
+      "name": "Galletas_07",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Galletas_07/Prefabs/Galletas_07.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.04864302650094032,
+        "z": 0.0684172511100769
+      }
+    },
+    {
+      "name": "Conserva_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_01/Prefabs/Conserva_01.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.10890192538499832,
+        "y": 0.14000000059604645,
+        "z": 0.10909958928823471
+      }
+    },
+    {
+      "name": "Conserva_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_02/Prefabs/Conserva_02.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.10890194028615952,
+        "y": 0.14000000059604645,
+        "z": 0.10909958928823471
+      }
+    },
+    {
+      "name": "Conserva_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_03/Prefabs/Conserva_03.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.1089019775390625,
+        "y": 0.14000000059604645,
+        "z": 0.10909958928823471
+      }
+    },
+    {
+      "name": "Conserva_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_04/Prefabs/Conserva_04.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.1096658706665039,
+        "y": 0.14000000059604645,
+        "z": 0.10746964812278748
+      }
+    },
+    {
+      "name": "Conserva_05",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_05/Prefabs/Conserva_05.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.10734140872955322,
+        "y": 0.14000000059604645,
+        "z": 0.10967838764190674
+      }
+    },
+    {
+      "name": "Conserva_06",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_06/Prefabs/Conserva_06.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.10734143853187561,
+        "y": 0.14000000059604645,
+        "z": 0.10967835783958435
+      }
+    },
+    {
+      "name": "Conserva_07",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_07/Prefabs/Conserva_07.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.10734143853187561,
+        "y": 0.14000000059604645,
+        "z": 0.10967835783958435
+      }
+    },
+    {
+      "name": "Conserva_08",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_08/Prefabs/Conserva_08.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.10761801153421402,
+        "y": 0.14000000059604645,
+        "z": 0.10964609682559967
+      }
+    },
+    {
+      "name": "Conserva_09",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Conserva_09/Prefabs/Conserva_09.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.14000000059604645,
+        "y": 0.07981007546186447,
+        "z": 0.1366262584924698
+      }
+    },
+    {
+      "name": "Salsa_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Salsa_01/Prefabs/Salsa_01.prefab",
+      "meshes": 1,
+      "triangles": 236,
+      "size": {
+        "x": 0.07910436391830444,
+        "y": 0.14000000059604645,
+        "z": 0.057971466332674026
+      }
+    },
+    {
+      "name": "Salsa_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Salsa_02/Prefabs/Salsa_02.prefab",
+      "meshes": 1,
+      "triangles": 236,
+      "size": {
+        "x": 0.07910436391830444,
+        "y": 0.14000000059604645,
+        "z": 0.057971466332674026
+      }
+    },
+    {
+      "name": "Cafe_y_Snacks_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cafe_y_Snacks_01/Prefabs/Cafe_y_Snacks_01.prefab",
+      "meshes": 1,
+      "triangles": 84,
+      "size": {
+        "x": 0.13996538519859314,
+        "y": 0.2800000011920929,
+        "z": 0.08221521228551865
+      }
+    },
+    {
+      "name": "Cafe_y_Snacks_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cafe_y_Snacks_02/Prefabs/Cafe_y_Snacks_02.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.24046377837657928,
+        "y": 0.2800000011920929,
+        "z": 0.1273868978023529
+      }
+    },
+    {
+      "name": "Cafe_y_Snacks_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cafe_y_Snacks_03/Prefabs/Cafe_y_Snacks_03.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.18762825429439545,
+        "y": 0.2800000011920929,
+        "z": 0.1273868978023529
+      }
+    },
+    {
+      "name": "Cafe_y_Snacks_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cafe_y_Snacks_04/Prefabs/Cafe_y_Snacks_04.prefab",
+      "meshes": 1,
+      "triangles": 16,
+      "size": {
+        "x": 0.2412387728691101,
+        "y": 0.2800000011920929,
+        "z": 0.16569273173809052
+      }
+    },
+    {
+      "name": "Cafe_y_Snacks_05",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cafe_y_Snacks_05/Prefabs/Cafe_y_Snacks_05.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.2761802077293396,
+        "y": 0.1598292887210846,
+        "z": 0.2800000011920929
+      }
+    },
+    {
+      "name": "Cafe_y_Snacks_06",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Cafe_y_Snacks_06/Prefabs/Cafe_y_Snacks_06.prefab",
+      "meshes": 1,
+      "triangles": 108,
+      "size": {
+        "x": 0.2763632535934448,
+        "y": 0.15985393524169922,
+        "z": 0.2800000011920929
+      }
+    },
+    {
+      "name": "Fideos_Instantaneos_01",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Fideos_Instantaneos_01/Prefabs/Fideos_Instantaneos_01.prefab",
+      "meshes": 3,
+      "triangles": 244,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.2789575755596161,
+        "z": 0.27999988198280334
+      },
+      "note": "Cuerpo, interior y tapa reunidos; la tapa conserva el material de color plano del original."
+    },
+    {
+      "name": "Fideos_Instantaneos_02",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Fideos_Instantaneos_02/Prefabs/Fideos_Instantaneos_02.prefab",
+      "meshes": 3,
+      "triangles": 244,
+      "size": {
+        "x": 0.279226154088974,
+        "y": 0.2800000011920929,
+        "z": 0.2792260944843292
+      },
+      "note": "Cuerpo, interior y tapa reunidos; la tapa conserva el material de color plano del original."
+    },
+    {
+      "name": "Fideos_Instantaneos_03",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Fideos_Instantaneos_03/Prefabs/Fideos_Instantaneos_03.prefab",
+      "meshes": 3,
+      "triangles": 244,
+      "size": {
+        "x": 0.2800000011920929,
+        "y": 0.27514222264289856,
+        "z": 0.2799999415874481
+      },
+      "note": "Cuerpo, interior y tapa reunidos; la tapa conserva el material de color plano del original."
+    },
+    {
+      "name": "Fideos_Instantaneos_04",
+      "category": "Good Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Good Items/Alimentos/Fideos_Instantaneos_04/Prefabs/Fideos_Instantaneos_04.prefab",
+      "meshes": 3,
+      "triangles": 244,
+      "size": {
+        "x": 0.2799999415874481,
+        "y": 0.27514222264289856,
+        "z": 0.2800000011920929
+      },
+      "note": "Cuerpo, interior y tapa reunidos; la tapa conserva el material de color plano del original."
+    },
+    {
+      "name": "Pizza_01",
+      "category": "Bad Items",
+      "source": "Alimentos/psxps1_food_props__lowpoly.glb",
+      "prefab": "Assets/OndaS/Items/Bad Items/Alimentos/Pizza_01/Prefabs/Pizza_01.prefab",
+      "meshes": 2,
+      "triangles": 44,
+      "size": {
+        "x": 0.2799999713897705,
+        "y": 0.04081964120268822,
+        "z": 0.2781740427017212
+      }
+    },
+    {
+      "name": "Manta",
+      "category": "Good Items",
+      "source": "Mantas/Manta_PSX_Horror/blanket.blend",
+      "prefab": "Assets/OndaS/Items/Good Items/Manta/Prefabs/Manta.prefab",
+      "meshes": 1,
+      "triangles": 15409,
+      "size": {
+        "x": 0.729454517364502,
+        "y": 0.010568900033831596,
+        "z": 0.800000011920929
+      },
+      "note": "Malla base de blanket.blend; 15409 triángulos; ambas variantes comparten la malla."
+    },
+    {
+      "name": "PS1",
+      "category": "Bad Items",
+      "source": "PS1/low-poly-sony-playstation-psx-ps1/source/PlayStation.rar/PSX.glb",
+      "prefab": "Assets/OndaS/Items/Bad Items/PS1/Prefabs/PS1.prefab",
+      "meshes": 1,
+      "triangles": 296,
+      "size": {
+        "x": 0.2072121798992157,
+        "y": 0.0534709095954895,
+        "z": 0.27000001072883606
+      },
+      "note": "Se corrigieron normales y orientación de caras para iluminar la consola de forma coherente."
+    },
+    {
+      "name": "Agua",
+      "category": "Good Items",
+      "source": "Agua/Survival/Models/Survival.fbx [Water]",
+      "prefab": "Assets/OndaS/Items/Good Items/Agua/Prefabs/Agua.prefab",
+      "meshes": 1,
+      "triangles": 80,
+      "size": {
+        "x": 0.08738734573125839,
+        "y": 0.2800000011920929,
+        "z": 0.10090619325637817
+      }
+    },
+    {
+      "name": "Llave_Inglesa",
+      "category": "Good Items",
+      "source": "Wrench/PSX Wrench Final.fbx",
+      "prefab": "Assets/OndaS/Items/Good Items/Llave_Inglesa/Prefabs/Llave_Inglesa.prefab",
+      "meshes": 1,
+      "triangles": 244,
+      "size": {
+        "x": 0.062161847949028015,
+        "y": 0.25,
+        "z": 0.013753028586506844
+      }
+    },
+    {
+      "name": "Libro_01",
+      "category": "Bad Items",
+      "source": "Libros/Low Poly Interior Junk – PSX Style/Books/books.fbx",
+      "prefab": "Assets/OndaS/Items/Bad Items/Libros/Prefabs/Libro_01.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.20282110571861267,
+        "y": 0.03170185908675194,
+        "z": 0.23999999463558197
+      }
+    },
+    {
+      "name": "Libro_02",
+      "category": "Bad Items",
+      "source": "Libros/Low Poly Interior Junk – PSX Style/Books/books.fbx",
+      "prefab": "Assets/OndaS/Items/Bad Items/Libros/Prefabs/Libro_02.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.2245747447013855,
+        "y": 0.031800776720047,
+        "z": 0.23999999463558197
+      }
+    },
+    {
+      "name": "Libro_03",
+      "category": "Bad Items",
+      "source": "Libros/Low Poly Interior Junk – PSX Style/Books/books.fbx",
+      "prefab": "Assets/OndaS/Items/Bad Items/Libros/Prefabs/Libro_03.prefab",
+      "meshes": 1,
+      "triangles": 12,
+      "size": {
+        "x": 0.18685027956962585,
+        "y": 0.032368339598178864,
+        "z": 0.23999999463558197
+      }
+    },
+    {
+      "name": "Mascarilla",
+      "category": "Good Items",
+      "source": "Mascarilla/psx_mask_package/Unity_Replace_Dirty/medmask1.fbx",
+      "prefab": "Assets/OndaS/Items/Good Items/Mascarilla/Prefabs/Mascarilla.prefab",
+      "meshes": 1,
+      "triangles": 546,
+      "size": {
+        "x": 0.18000000715255737,
+        "y": 0.13890093564987183,
+        "z": 0.17262707650661469
+      }
+    },
+    {
+      "name": "Pilas",
+      "category": "Good Items",
+      "source": "Pilas y Botiquin/psx-survival-pickups-free/fbx/battery_aa_pack.fbx",
+      "prefab": "Assets/OndaS/Items/Good Items/Pilas/Prefabs/Pilas.prefab",
+      "meshes": 1,
+      "triangles": 124,
+      "size": {
+        "x": 0.040909092873334885,
+        "y": 0.008181817829608917,
+        "z": 0.06000000238418579
+      }
+    },
+    {
+      "name": "Botiquin",
+      "category": "Good Items",
+      "source": "Pilas y Botiquin/psx-survival-pickups-free/fbx/first_aid_box.fbx",
+      "prefab": "Assets/OndaS/Items/Good Items/Botiquin/Prefabs/Botiquin.prefab",
+      "meshes": 2,
+      "triangles": 252,
+      "size": {
+        "x": 0.24000000953674316,
+        "y": 0.09058824181556702,
+        "z": 0.1728833168745041
+      }
+    },
+    {
+      "name": "Manta_Azul",
+      "category": "Good Items",
+      "source": "Mantas/Manta_PSX_Horror/blanket.blend",
+      "prefab": "Assets/OndaS/Items/Good Items/Manta/Prefabs/Manta_Azul.prefab",
+      "meshes": 1,
+      "triangles": 15409,
+      "size": {
+        "x": 0.729454517364502,
+        "y": 0.010568900033831596,
+        "z": 0.800000011920929
+      },
+      "note": "Malla base de blanket.blend; 15409 triángulos; ambas variantes comparten la malla."
+    },
+    {
+      "name": "Mascarilla_Limpia",
+      "category": "Good Items",
+      "source": "Mascarilla/psx_mask_package/Unity_Replace_Dirty/medmask1.fbx",
+      "prefab": "Assets/OndaS/Items/Good Items/Mascarilla/Prefabs/Mascarilla_Limpia.prefab",
+      "meshes": 1,
+      "triangles": 546,
+      "size": {
+        "x": 0.18000000715255737,
+        "y": 0.13890093564987183,
+        "z": 0.17262707650661469
+      }
+    }
+  ],
+  "sourceRoot": "/Users/israelgarcia/Downloads/Onda S Descargas/Items",
+  "counts": {
+    "Good Items": 63,
+    "Bad Items": 8,
+    "total": 71
+  },
+  "classification": "Comida preparada (cajas de hamburguesa y pizza) en Bad Items por indicación del usuario. Good/Bad es una clasificación de diseño del juego."
+}

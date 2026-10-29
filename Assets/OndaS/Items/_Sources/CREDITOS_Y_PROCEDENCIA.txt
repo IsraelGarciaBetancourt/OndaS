@@ -1,0 +1,40 @@
+Créditos y procedencia de la importación de Items
+
+Los textos originales disponibles están junto a este archivo. No se sustituyen sus licencias.
+
+Alimentos:
+(PSX/PS1) Food props | LOWPOLY by grgssblend
+https://sketchfab.com/grgssblend
+https://sketchfab.com/3d-models/psxps1-food-props-lowpoly-e2e3e0de18e1415aa30dcdd8b78efd5e
+CC BY 4.0. Autor, fuente y licencia obtenidos de asset.extras en el GLB local.
+Adaptaciones: separación de objetos, UV para Unity, escala y materiales URP.
+
+Pilas y botiquín:
+PSX Survival Pickups Free by heyheythere
+https://heyheythere.itch.io/psx-survival-pickups-free — CC BY 4.0.
+Ver PSX_Survival_Pickups_LICENSE.txt para el texto original y la atribución exacta.
+Adaptaciones: selección de dos modelos, materiales URP y escala de trabajo.
+
+Televisor y radio retro:
+PSX OLD OBJECTS - FREE PACK by ghinem — https://ghinem.itch.io
+Ver TV_Radio_README.txt para los términos originales.
+Adaptaciones: conversión de GLB, escala, UV y materiales URP.
+
+Linterna y radio HorrorKit:
+3Dexter — https://3dexter.itch.io/retrohorrorkit
+Ver HorrorKit_README.txt. El readme local no contiene términos de licencia detallados.
+Adaptaciones: selección de linterna/radio, conversión, UV, escala y materiales URP.
+
+PS1:
+Dio / diopieretti3d — https://sketchfab.com/diopieretti3d
+Ver PS1_README.txt. El texto original permite su uso en juegos/proyectos con crédito.
+Adaptaciones: conversión, corrección de normales/caras, UV, escala y material URP.
+
+Manta:
+ROY, según las instrucciones locales incluidas; estas indican atribución CC BY.
+Ver Manta_INSTRUCCIONES.txt. El archivo base se llama internamente fur carpet.
+Adaptaciones: extracción de la malla base y UV del .blend; aplicación de las dos texturas PSX suministradas y escala.
+
+Agua, libros, mascarilla y llave inglesa:
+Las carpetas locales examinadas no incluían un texto de licencia o autor identificable.
+Se conserva su procedencia en Catalogo_Items.json. No se les atribuye una licencia inventada.
