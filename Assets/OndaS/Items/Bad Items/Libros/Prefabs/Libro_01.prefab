@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5468792657337369918}
+  - component: {fileID: 2624769424288218285}
+  - component: {fileID: 9062502832291611629}
   m_Layer: 0
   m_Name: Libro_01
   m_TagString: Untagged
@@ -32,6 +34,40 @@ Transform:
   - {fileID: 2519518553840935827}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2624769424288218285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589647367265530452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17df81df45d804d40898d7f357992cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Items.OndaSCollectible
+  item: {fileID: 11400000, guid: c3834d3bc2a5541e992a7690b241f46f, type: 2}
+--- !u!65 &9062502832291611629
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589647367265530452}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2028211, y: 0.04, z: 0.24}
+  m_Center: {x: 0, y: 0.01585093, z: 0}
 --- !u!1 &1495959048982249354
 GameObject:
   m_ObjectHideFlags: 0

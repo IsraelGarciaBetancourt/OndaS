@@ -99,6 +99,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5865394249034289817}
+  - component: {fileID: 3672933799837301610}
+  - component: {fileID: 8042291914584079602}
   m_Layer: 0
   m_Name: Salsa_02
   m_TagString: Untagged
@@ -122,3 +124,37 @@ Transform:
   - {fileID: 3925715555278858035}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3672933799837301610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6375067659018197906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17df81df45d804d40898d7f357992cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Items.OndaSCollectible
+  item: {fileID: 11400000, guid: c2ebc529340894fce88ee7145a15b469, type: 2}
+--- !u!65 &8042291914584079602
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6375067659018197906}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.079104364, y: 0.14, z: 0.057971463}
+  m_Center: {x: 0, y: 0.07, z: -0.0000000037252903}

@@ -99,6 +99,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3778059458509469219}
+  - component: {fileID: 1491928218826523842}
+  - component: {fileID: 7766428144631791434}
   m_Layer: 0
   m_Name: Hamburguesa_01
   m_TagString: Untagged
@@ -122,3 +124,37 @@ Transform:
   - {fileID: 6910416953530002858}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1491928218826523842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952923083023858188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17df81df45d804d40898d7f357992cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Items.OndaSCollectible
+  item: {fileID: 11400000, guid: 51278b2e5ebb8419491dbfc8858e4f30, type: 2}
+--- !u!65 &7766428144631791434
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7952923083023858188}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.26756686, y: 0.1434981, z: 0.28}
+  m_Center: {x: 0, y: 0.07174905, z: 0}

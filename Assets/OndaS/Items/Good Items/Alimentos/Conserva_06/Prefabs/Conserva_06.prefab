@@ -99,6 +99,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6053258037254875861}
+  - component: {fileID: 922758139072099799}
+  - component: {fileID: 5525741688048100237}
   m_Layer: 0
   m_Name: Conserva_06
   m_TagString: Untagged
@@ -122,3 +124,37 @@ Transform:
   - {fileID: 8192214369643255601}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &922758139072099799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5467069309182791803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17df81df45d804d40898d7f357992cda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Items.OndaSCollectible
+  item: {fileID: 11400000, guid: f19c42e25148143af83e06928e8c86f2, type: 2}
+--- !u!65 &5525741688048100237
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5467069309182791803}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.10734144, y: 0.14, z: 0.10967836}
+  m_Center: {x: 0, y: 0.07, z: 0}

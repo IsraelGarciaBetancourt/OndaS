@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2346d2a738df54eca8f7f258b0d33541, type: 3}
+  m_Name: Linterna
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Items.OndaSItemDefinition
+  displayName: Linterna
+  category: 0
+  weightKg: 0.8
+  worldPrefab: {fileID: 8507584075547287016, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}

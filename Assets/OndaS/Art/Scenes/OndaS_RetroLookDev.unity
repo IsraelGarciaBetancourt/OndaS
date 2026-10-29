@@ -86153,6 +86153,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 421252560260396522, guid: a210596d183602d4f9abc956ba791b9e, type: 3}
   m_PrefabInstance: {fileID: 1917976187}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &538181068
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 26.530382
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 12.822966
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.2137109
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 986682963474356609, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1005967648406708921, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
+      propertyPath: m_Name
+      value: Agua
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4a4f961fcfa4142eeb5b3c6869f68370, type: 3}
 --- !u!4 &538282964 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4118611075715258515, guid: f209b4f30262ac0479f8e1072403c9cd, type: 3}
@@ -162556,6 +162613,9 @@ MonoBehaviour:
   controller: {fileID: 1260469037}
   bobFrequency: 9
   bobHeight: 0.035
+  hiddenDrop: 0.5
+  transitionSpeed: 8
+  swingDegrees: 7
 --- !u!1001 &991046909
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -203844,6 +203904,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OndaS.Visual.OndaSLookDevWalkthrough
   viewCamera: {fileID: 1292031866}
   speed: 3.5
+  sprintSpeed: 5.5
+  crouchSpeed: 1.8
+  crouchHeightRatio: 0.6
+  postureSpeed: 4
   mouseSensitivity: 0.1
 --- !u!114 &1260469039
 MonoBehaviour:
@@ -347380,3 +347444,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 2028063701}
   - {fileID: 1579230206}
+  - {fileID: 538181068}
