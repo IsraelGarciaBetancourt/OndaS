@@ -183,7 +183,7 @@ public static class OndaSLookDevSetup
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 
-    private static Texture MakeTextureVariant(Texture source)
+    internal static Texture MakeTextureVariant(Texture source)
     {
         string path = AssetDatabase.GetAssetPath(source);
         string ext = Path.GetExtension(path).ToLowerInvariant();

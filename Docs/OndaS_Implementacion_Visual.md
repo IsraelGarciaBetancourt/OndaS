@@ -1,7 +1,17 @@
 # OndaS — Estado de la implementación visual
 
-**Actualizado:** 28 de octubre de 2026.  
-**Estado:** primera prueba visual en Unity, centrada en el cuarto piso.
+**Actualizado:** 29 de octubre de 2026.  
+**Estado:** tratamiento retro extendido al edificio en una escena de revisión.
+
+## Edificio de ocho pisos
+
+La escena `Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity` se creó a partir de la versión guardada de `OndaS_RetroLookDev`, con la ampliación a ocho pisos. Conserva la escena original para que pueda seguir abierta o compararse en Unity. Abre la nueva escena para revisar el resultado y guardar en ella los cambios posteriores que quieras conservar.
+
+El tratamiento de materiales del prototipo se extendió a los renderers con materiales URP/Lit bajo `Structure_03`, incluidos los pisos duplicados, zonas comunes, exterior y cubierta. Se reutilizaron las variantes existentes y se crearon otras 25; los materiales originales del kit siguen sin editarse. Las luces del edificio se ajustaron al tono y la intensidad de la prueba inicial. El piso 8, antes el cuarto piso de la prueba, conserva sus ajustes y los dos emisores de polvo originales. La cámara retro y los ajustes ambientales siguen afectando a toda la escena; no se añadieron emisores de polvo a los demás pisos.
+
+La conversión se realizó con Unity en una copia del proyecto. Falta revisar visualmente los pisos, escaleras y fachada en Play y ajustar las zonas que lo necesiten. El comando **OndaS > Extender estilo retro al edificio** permite aplicar las variantes existentes y procesar nuevas piezas URP/Lit en cualquiera de las dos escenas; guarda la escena activa. Otros shaders y materiales sin recursos compatibles requieren revisión manual.
+
+Al comparar ambas escenas se detectaron 32 asignaciones vacías que ya estaban en el edificio original, principalmente en bombillas, llamas de velas y algunos muebles. Deben revisarse visualmente; la conversión no añadió asignaciones vacías nuevas.
 
 Este documento describe lo que ya está implementado y cómo probarlo. La dirección artística y las ideas para etapas posteriores están en [OndaS_Direccion_Visual_PSX.md](OndaS_Direccion_Visual_PSX.md); ese archivo es un plan, por lo que no debe interpretarse como una lista de funciones terminadas.
 
