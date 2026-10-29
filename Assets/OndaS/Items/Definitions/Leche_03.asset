@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2346d2a738df54eca8f7f258b0d33541, type: 3}
+  m_Name: Leche_03
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Items.OndaSItemDefinition
+  displayName: Leche 03
+  category: 0
+  weightKg: 0.5
+  worldPrefab: {fileID: 5217426746063517423, guid: 0c26f3a1e6dd84b31a64b79095ea7954, type: 3}

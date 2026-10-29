@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using OndaS.Gameplay.UI;
 
 namespace OndaS.Visual
 {
@@ -15,6 +16,12 @@ namespace OndaS.Visual
         [SerializeField, Range(0.4f, 0.95f)] private float crouchHeightRatio = 0.6f;
         [SerializeField, Min(0.1f)] private float postureSpeed = 4f;
         [SerializeField] private float mouseSensitivity = 0.10f;
+        [Header("Stamina")]
+        [SerializeField, Min(1f)] private float maxStamina = 100f;
+        [SerializeField, Min(0.01f)] private float sprintDrainPerSecond = 20f;
+        [SerializeField, Min(0.01f)] private float staminaRecoveryPerSecond = 15f;
+        [SerializeField, Min(0f)] private float staminaRecoveryDelay = 1f;
+        [SerializeField, Range(0.01f, 1f)] private float exhaustedRecoveryFraction = 0.25f;
         private CharacterController controller;
         private Light torch;
         private Light[] sceneLights;
@@ -27,13 +34,25 @@ namespace OndaS.Visual
         private float ambientIntensity;
         private float standingHeight, standingBottom, standingCameraY;
         private bool crouchRequested;
+        private float stamina;
+        private float recoveryWait;
+        private bool exhausted;
+        private bool mustReleaseSprint;
+        private OndaSStaminaHud staminaHud;
         private readonly Collider[] clearanceHits = new Collider[32];
         public bool IsSprinting { get; private set; }
         public bool IsCrouching => controller != null && controller.height < standingHeight - 0.01f;
+        public float Stamina => stamina;
+        public float MaxStamina => maxStamina;
+        public bool IsExhausted => exhausted;
 
         private void Start()
         {
             controller = GetComponent<CharacterController>();
+            stamina = maxStamina;
+            var hudObject = new GameObject("Stamina UI", typeof(RectTransform));
+            staminaHud = hudObject.AddComponent<OndaSStaminaHud>();
+            staminaHud.Initialize(this);
             if (viewCamera == null) viewCamera = GetComponentInChildren<Camera>();
             standingHeight = controller.height;
             standingBottom = controller.center.y - standingHeight * 0.5f;
@@ -59,7 +78,11 @@ namespace OndaS.Visual
         {
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
-            if (keyboard == null) return;
+            if (keyboard == null)
+            {
+                UpdateStamina(false, false, Time.deltaTime);
+                return;
+            }
             if (keyboard.cKey.wasPressedThisFrame) crouchRequested = !crouchRequested;
             UpdatePosture();
             if (keyboard.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
@@ -75,8 +98,9 @@ namespace OndaS.Visual
             Vector2 input = new Vector2((keyboard.dKey.isPressed ? 1 : 0) - (keyboard.aKey.isPressed ? 1 : 0),
                                        (keyboard.wKey.isPressed ? 1 : 0) - (keyboard.sKey.isPressed ? 1 : 0));
             input = Vector2.ClampMagnitude(input, 1f);
-            IsSprinting = !IsCrouching && !crouchRequested && input.sqrMagnitude > 0f &&
-                          (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed);
+            bool sprintHeld = keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed;
+            bool wantsSprint = !IsCrouching && !crouchRequested && input.sqrMagnitude > 0f && sprintHeld;
+            UpdateStamina(wantsSprint, sprintHeld, Time.deltaTime);
             float moveSpeed = IsCrouching || crouchRequested ? crouchSpeed : IsSprinting ? sprintSpeed : speed;
             if (controller.isGrounded && verticalSpeed < 0) verticalSpeed = -2f;
             verticalSpeed += -15f * Time.deltaTime;
@@ -86,6 +110,32 @@ namespace OndaS.Visual
         }
 
         public void ToggleBlackoutPreview() { SetBlackout(!blackout); }
+
+        private void UpdateStamina(bool wantsSprint, bool sprintHeld, float deltaTime)
+        {
+            if (!sprintHeld) mustReleaseSprint = false;
+            if (exhausted && !mustReleaseSprint && stamina >= maxStamina * exhaustedRecoveryFraction)
+                exhausted = false;
+
+            IsSprinting = wantsSprint && !exhausted && stamina > 0f;
+            if (IsSprinting)
+            {
+                stamina = Mathf.Max(0f, stamina - sprintDrainPerSecond * deltaTime);
+                recoveryWait = staminaRecoveryDelay;
+                if (stamina <= 0f)
+                {
+                    exhausted = true;
+                    mustReleaseSprint = true;
+                    IsSprinting = false;
+                }
+            }
+            else
+            {
+                float delay = Mathf.Min(recoveryWait, deltaTime);
+                recoveryWait -= delay;
+                stamina = Mathf.Min(maxStamina, stamina + staminaRecoveryPerSecond * (deltaTime - delay));
+            }
+        }
 
         private void UpdatePosture()
         {
@@ -143,9 +193,21 @@ namespace OndaS.Visual
 
         private void OnDestroy()
         {
+            if (staminaHud != null) Destroy(staminaHud.gameObject);
             if (blackout) SetBlackout(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+        }
+
+        private void OnEnable()
+        {
+            if (staminaHud != null) staminaHud.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            IsSprinting = false;
+            if (staminaHud != null) staminaHud.gameObject.SetActive(false);
         }
     }
 }
