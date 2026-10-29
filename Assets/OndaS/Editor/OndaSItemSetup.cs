@@ -21,6 +21,8 @@ public static class OndaSItemSetup
         int configured = 0;
         foreach (var entry in catalog.items)
         {
+            // The backpack is a physical container, not a normal collectible.
+            if (entry.name == "Backpack") continue;
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(entry.prefab);
             if (prefab == null) { Debug.LogError("Falta el prefab: " + entry.prefab); continue; }
             string definitionPath = definitions + "/" + entry.name + ".asset";

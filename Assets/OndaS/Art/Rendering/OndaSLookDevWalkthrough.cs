@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using OndaS.Gameplay.UI;
+using OndaS.Gameplay.Items;
 
 namespace OndaS.Visual
 {
@@ -88,7 +89,7 @@ namespace OndaS.Visual
             if (keyboard.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
             if (mouse != null && mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
             { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
-            if (mouse != null && Cursor.lockState == CursorLockMode.Locked)
+            if (mouse != null && Cursor.lockState == CursorLockMode.Locked && !OndaSBackpackRadial.IsOpen)
             {
                 Vector2 delta = mouse.delta.ReadValue() * mouseSensitivity;
                 pitch = Mathf.Clamp(pitch - delta.y, -85f, 85f);

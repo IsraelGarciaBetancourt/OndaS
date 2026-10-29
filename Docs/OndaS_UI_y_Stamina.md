@@ -10,11 +10,11 @@ Este documento describe la interfaz y el sprint implementados en la escena de de
 | `Shift` izquierdo o derecho | Correr mientras el jugador se desplaza, está de pie y tiene stamina disponible. |
 | `C` | Alternar entre agachado y de pie. No se puede correr agachado ni mientras se solicita agacharse. |
 | `E` | Interactuar con la puerta u objeto al que apunta la cámara. |
-| `1`–`5` | Seleccionar un espacio de la mochila. |
+| `1`, `2`, `3` | Seleccionar un espacio rápido o la mochila. |
 | `Q` | Soltar el objeto del espacio seleccionado. |
 | `Esc` / clic izquierdo | Liberar / volver a capturar el cursor. |
 
-Los avisos de puertas y recolección aparecen cerca del centro, en amarillo y sin fondo negro. La interfaz también muestra mensajes de mochila llena, exceso de peso y resultado al soltar objetos. El inventario aparece en el centro inferior con cinco espacios, el peso y los controles; el espacio seleccionado lleva `>`. La barra de stamina aparece en la esquina inferior derecha con su porcentaje y cambia el texto a `AGOTADO` al alcanzar cero.
+Los avisos de puertas y recolección aparecen cerca del centro, en amarillo y sin fondo negro. La interfaz también muestra mensajes de espacios rápidos llenos y resultado de las transferencias. El inventario aparece en el centro inferior con dos espacios rápidos y el espacio exclusivo de la mochila; el espacio seleccionado está resaltado. Mantener E sobre una mochila en el suelo abre su menú radial de cuatro espacios y equipamiento. La barra de stamina aparece en la esquina inferior derecha con su porcentaje y cambia el texto a `AGOTADO` al alcanzar cero.
 
 Las interacciones, selección y suelta requieren que el cursor esté capturado. La distancia inicial del raycast de interacción es 2,5 m y se puede ajustar en `OndaSDoorInteractor`. El funcionamiento de la mochila y la configuración de los ítems se detallan en [OndaS_Inventario.md](OndaS_Inventario.md).
 
@@ -78,10 +78,10 @@ Para ajustar los valores, selecciona el jugador de la escena y busca la sección
 | `Assets/OndaS/Gameplay/UI/OndaSTypography.cs` | Referencias de fuentes y aplicación del estilo a textos. |
 | `Assets/OndaS/Gameplay/UI/OndaSScribbleText.cs` | Animación de vértices TMP. |
 | `Assets/OndaS/Gameplay/UI/OndaSStaminaHud.cs` | Barra y texto de stamina. |
-| `Assets/OndaS/Gameplay/Items/OndaSInventoryHud.cs` | Nombres de los cinco espacios, selección y peso. |
+| `Assets/OndaS/Gameplay/Items/OndaSInventoryHud.cs` | Dos espacios rápidos y espacio de mochila con iconos y selección. |
 | `Assets/OndaS/Gameplay/Doors/OndaSDoorInteractor.cs` | Avisos, interacción compartida con puertas e ítems y creación del HUD de inventario. |
 | `Assets/OndaS/Art/Rendering/OndaSLookDevWalkthrough.cs` | Movimiento de prueba, sprint, stamina y creación de su HUD. |
 
-Los canvas de avisos, mochila y stamina se crean en Play, por lo que no aparecen como objetos permanentes de la escena en modo edición. La interfaz actual de inventario muestra nombres, no iconos. El sistema no implementa todavía pulso, efectos del agua o la mascarilla sobre la stamina, guardado entre escenas ni las demás fases del juego.
+Los canvas de avisos, mochila y stamina se crean en Play, por lo que no aparecen como objetos permanentes de la escena en modo edición. Los iconos de inventario son vistas previas provisionales generadas a partir de los modelos. El sistema no implementa todavía pulso, efectos del agua o la mascarilla sobre la stamina, guardado entre escenas ni las demás fases del juego.
 
-Durante la implementación se comprobó en Unity la compilación, la cobertura de caracteres con la fuente de respaldo, la variación de vértices Scribble, la recogida y suelta, los límites de inventario y las transiciones principales de stamina. Se revisó la presencia de los HUD en Game; su legibilidad y equilibrio deben seguir probándose durante el desarrollo.
+Durante la implementación se comprobó en Unity la compilación, la cobertura de caracteres con la fuente de respaldo, la variación de vértices Scribble, la recogida y suelta, los límites del inventario anterior (cinco espacios y 5 kg) y las transiciones principales de stamina. Se revisó la presencia de los HUD en Game; su legibilidad y equilibrio deben seguir probándose durante el desarrollo.
