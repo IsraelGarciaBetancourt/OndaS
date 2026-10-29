@@ -60,11 +60,13 @@ namespace OndaS.Visual
 
         private void Resize()
         {
-            if (Screen.width <= 0 || Screen.height <= 0) return;
+            // The Game view can briefly report a 1-pixel dimension during Play
+            // transitions or while its panel is collapsed. Wait for a usable size.
+            if (Screen.width < 32 || Screen.height < 32) return;
             lastWidth = Screen.width;
             lastHeight = Screen.height;
             int height = Mathf.Max(180, verticalResolution);
-            int width = Mathf.Max(1, Mathf.RoundToInt(height * ((float)lastWidth / lastHeight)));
+            int width = Mathf.Clamp(Mathf.RoundToInt(height * ((float)lastWidth / lastHeight)), 1, SystemInfo.maxTextureSize);
             worldCamera.targetTexture = previousTarget;
             if (worldTexture != null) { worldTexture.Release(); Destroy(worldTexture); }
             worldTexture = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32)
