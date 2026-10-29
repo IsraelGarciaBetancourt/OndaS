@@ -1,0 +1,18 @@
+MANTA PSX HORROR PARA UNITY 6
+
+1. Descomprime el ZIP.
+2. Abre tu archivo blanket.blend en Blender.
+3. Coloca Manta_PSX_Horror_128.png en la misma carpeta que blanket.blend.
+4. Ve a Scripting > Open y abre Convertir_Manta_PSX.py.
+5. Pulsa Run Script.
+6. Busca Manta_PSX_Export/Manta_PSX_Horror.fbx junto al .blend.
+7. Importa el FBX y la textura PNG a Unity.
+8. En la textura selecciona Filter Mode: Point (no filter), Max Size: 128 y Compression: None.
+9. En el material usa URP/Lit, Smoothness: 0. Asigna la textura al Base Map si no aparece automáticamente.
+
+NOTAS:
+- Es una textura de tela de estilo PSX (128x128), repetible.
+- El script puede reducir polígonos y crear UV si no existen.
+- El resultado final necesita revisarse visualmente en Blender para comprobar escala, forma y costuras.
+- Guarda una copia del .blend original antes de ejecutar.
+- La licencia CC BY del autor del modelo original sigue vigente: incluye la atribución a ROY.
