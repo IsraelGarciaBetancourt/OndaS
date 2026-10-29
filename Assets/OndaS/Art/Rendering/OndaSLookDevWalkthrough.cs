@@ -10,6 +10,10 @@ namespace OndaS.Visual
     {
         [SerializeField] private Camera viewCamera;
         [SerializeField] private float speed = 3.5f;
+        [SerializeField] private float sprintSpeed = 5.5f;
+        [SerializeField] private float crouchSpeed = 1.8f;
+        [SerializeField, Range(0.4f, 0.95f)] private float crouchHeightRatio = 0.6f;
+        [SerializeField, Min(0.1f)] private float postureSpeed = 4f;
         [SerializeField] private float mouseSensitivity = 0.10f;
         private CharacterController controller;
         private Light torch;
@@ -21,11 +25,19 @@ namespace OndaS.Visual
         private AmbientMode ambientMode;
         private Color ambientSky, ambientEquator, ambientGround, ambientLight;
         private float ambientIntensity;
+        private float standingHeight, standingBottom, standingCameraY;
+        private bool crouchRequested;
+        private readonly Collider[] clearanceHits = new Collider[32];
+        public bool IsSprinting { get; private set; }
+        public bool IsCrouching => controller != null && controller.height < standingHeight - 0.01f;
 
         private void Start()
         {
             controller = GetComponent<CharacterController>();
             if (viewCamera == null) viewCamera = GetComponentInChildren<Camera>();
+            standingHeight = controller.height;
+            standingBottom = controller.center.y - standingHeight * 0.5f;
+            standingCameraY = viewCamera.transform.localPosition.y;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             sceneLights = Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -48,6 +60,8 @@ namespace OndaS.Visual
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             if (keyboard == null) return;
+            if (keyboard.cKey.wasPressedThisFrame) crouchRequested = !crouchRequested;
+            UpdatePosture();
             if (keyboard.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
             if (mouse != null && mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
             { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
@@ -61,14 +75,46 @@ namespace OndaS.Visual
             Vector2 input = new Vector2((keyboard.dKey.isPressed ? 1 : 0) - (keyboard.aKey.isPressed ? 1 : 0),
                                        (keyboard.wKey.isPressed ? 1 : 0) - (keyboard.sKey.isPressed ? 1 : 0));
             input = Vector2.ClampMagnitude(input, 1f);
+            IsSprinting = !IsCrouching && !crouchRequested && input.sqrMagnitude > 0f &&
+                          (keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed);
+            float moveSpeed = IsCrouching || crouchRequested ? crouchSpeed : IsSprinting ? sprintSpeed : speed;
             if (controller.isGrounded && verticalSpeed < 0) verticalSpeed = -2f;
             verticalSpeed += -15f * Time.deltaTime;
-            controller.Move(((transform.right * input.x + transform.forward * input.y) * speed + Vector3.up * verticalSpeed) * Time.deltaTime);
+            controller.Move(((transform.right * input.x + transform.forward * input.y) * moveSpeed + Vector3.up * verticalSpeed) * Time.deltaTime);
             if (keyboard.bKey.wasPressedThisFrame) SetBlackout(!blackout);
             if (keyboard.fKey.wasPressedThisFrame) torch.enabled = !torch.enabled;
         }
 
         public void ToggleBlackoutPreview() { SetBlackout(!blackout); }
+
+        private void UpdatePosture()
+        {
+            bool shouldCrouch = crouchRequested || !HasStandingClearance();
+            float target = shouldCrouch ? Mathf.Max(controller.radius * 2f, standingHeight * crouchHeightRatio) : standingHeight;
+            float height = Mathf.MoveTowards(controller.height, target, postureSpeed * Time.deltaTime);
+            controller.height = height;
+            Vector3 center = controller.center;
+            center.y = standingBottom + height * 0.5f;
+            controller.center = center;
+            Vector3 cameraPosition = viewCamera.transform.localPosition;
+            cameraPosition.y = standingCameraY - (standingHeight - height);
+            viewCamera.transform.localPosition = cameraPosition;
+        }
+
+        private bool HasStandingClearance()
+        {
+            if (controller.height >= standingHeight - 0.01f) return true;
+            float radius = Mathf.Max(0.01f, controller.radius - 0.02f);
+            Vector3 bottom = transform.TransformPoint(new Vector3(controller.center.x, standingBottom + radius + 0.02f, controller.center.z));
+            Vector3 top = transform.TransformPoint(new Vector3(controller.center.x, standingBottom + standingHeight - radius - 0.02f, controller.center.z));
+            int count = Physics.OverlapCapsuleNonAlloc(bottom, top, radius, clearanceHits, ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < count; i++)
+            {
+                var hit = clearanceHits[i];
+                if (hit != null && !hit.transform.IsChildOf(transform) && !Physics.GetIgnoreLayerCollision(gameObject.layer, hit.gameObject.layer)) return false;
+            }
+            return count < clearanceHits.Length;
+        }
 
         private void SetBlackout(bool value)
         {

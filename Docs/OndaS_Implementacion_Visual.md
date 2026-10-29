@@ -134,3 +134,20 @@ Quedan por revisar con el equipo:
 - Decidir si se necesita un shader propio de superficies, deformación de vértices o UV afín. La muestra usa **URP/Lit** para los materiales del escenario; `OndaS/RetroLit` sigue siendo una propuesta.
 - Integrar el apagón y la linterna con los sistemas reales cuando se desarrollen las mecánicas, contemplando iluminación horneada, reflejos y materiales emisivos.
 - Medir rendimiento en un equipo de referencia y probar una compilación para Windows antes de extender la solución.
+
+### Personaje principal de la prueba
+
+En `OndaS_RetroLookDev`, el jugador de primera persona incorpora `Office Worker` como hijo del controlador existente. La cápsula visual anterior está desactivada; el `CharacterController`, la cámara retro, la navegación y el sistema de puertas se mantienen. Los pies del modelo se alinean con la base del controlador. El esqueleto usa un avatar **Generic** y el Animator reproduce `idle` y `walk` según la velocidad horizontal del controlador. Las diez animaciones originales permanecen en el FBX para uso futuro. El movimiento sigue a cargo del controlador, sin root motion.
+
+Durante Play, el cuerpo se configura para proyectar sombras sin dibujarse en la cámara de primera persona, evitando que la cabeza obstruya la vista. En la escena de Unity el modelo puede inspeccionarse seleccionando `Base Scene/First Person Player/Office Worker`. La iluminación del escenario debe permitir sombras para que estas aparezcan. La integración todavía no incluye animaciones de recoger objetos ni de caminar agachado.
+
+El material utiliza el atlas con filtrado Point y sin mipmaps, junto con los colores de vértice que vienen en el modelo. Los recursos están en `Assets/OndaS/Characters/OfficeWorker`; el menú **OndaS > Configurar personaje principal** permite volver a configurar la escena de prueba guardada.
+
+Crédito del recurso: **PSX People Free by heyheythere** — https://heyheythere.itch.io/psx-people-free — CC BY 4.0. La licencia completa acompaña al modelo en `Assets/OndaS/Characters/OfficeWorker/LICENSE.txt`; este crédito también debe aparecer en los créditos del juego publicado.
+
+
+Los antebrazos y manos visibles en primera persona se extrajeron de la malla original del personaje y conservan su atlas y colores de vértice. Están bajo `Camera/OndaS First Person Hands` y `OndaSFirstPersonHands` hace subir y bajar los brazos de forma alternada al caminar, ajusta el ritmo a la velocidad y los baja suavemente al detenerse; la frecuencia y amplitud se pueden ajustar en el Inspector. Son mallas independientes con oscilación sencilla, no animaciones completas de manos o interacción. El material del personaje también recibe las luces adicionales de la escena. El menú **OndaS > Configurar manos en primera persona** regenera las mallas y la configuración de la escena.
+
+El objeto temporal `OndaS Retro Display` presenta el resultado de la cámara retro en Game. Durante Play se oculta únicamente en la vista Scene del editor para que el lienzo no cubra la escena.
+
+En la escena de prueba, `Shift` sostenido permite correr y `C` alterna entre agacharse y levantarse. Al agacharse se reducen la altura del CharacterController y de la cámara; la velocidad también disminuye. Si hay un obstáculo sobre el jugador, permanece agachado hasta que haya espacio para levantarse. Correr utiliza el clip `run`; aún no tiene consumo de estamina. El paquete incluye `cower`, pero muestra al personaje cubriéndose la cabeza y temblando, por lo que no se usa como animación de desplazamiento agachado. El cuerpo completo y su sombra todavía no cuentan con una animación específica de agachado.

@@ -49,6 +49,11 @@ namespace OndaS.Visual
             rect.anchorMax = Vector2.one;
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
+#if UNITY_EDITOR
+            // The overlay is for the Game view; its screen-sized canvas otherwise
+            // appears as a large rectangle in the editor's Scene view during Play.
+            UnityEditor.SceneVisibilityManager.instance.Hide(displayObject, true);
+#endif
             Resize();
         }
 
