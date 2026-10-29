@@ -31,6 +31,7 @@ La prueba conserva el edificio completo como contexto. Las variantes de material
 | Ratón | Girar la vista mientras el cursor está capturado |
 | `B` | Alternar entre preparación y apagón; el apagón enciende la linterna |
 | `F` | Encender o apagar la linterna de prueba |
+| `E` | Abrir o cerrar una puerta animada cercana a la que se esté apuntando |
 | `Esc` | Liberar el cursor; hacer clic en Game para capturarlo otra vez |
 
 También se puede alternar el apagón desde **OndaS > Alternar apagón de prueba** mientras el juego está en Play. Estos controles son herramientas temporales para observar el arte, no las mecánicas definitivas del juego.
@@ -106,6 +107,10 @@ En el estado de apagón, el recorrido guarda y desactiva las luces encontradas e
 El controlador del kit utiliza la API antigua `UnityEngine.Input`, pero el proyecto está configurado para el paquete **Input System**. En la prueba original aparecieron excepciones al ejecutar los scripts de movimiento y mirada del kit.
 
 En la copia de la escena se desactivaron los componentes `SojaExiles.PlayerMovement` y `SojaExiles.MouseLook` del jugador y se agregó `OndaSLookDevWalkthrough`, que usa `Keyboard` y `Mouse` del Input System. Es un controlador simple de recorrido, con `CharacterController` y gravedad; su finalidad es revisar la escena. Otros scripts interactivos del kit siguen existiendo y algunos también usan la API antigua, por lo que deberán revisarse si se quieren usar en el juego.
+
+Las puertas animadas de la escena de prueba también tienen interacción con el nuevo Input System. `Assets/OndaS/Gameplay/Doors/OndaSDoorInteractor.cs` lanza un raycast desde la cámara con alcance de `2.5` unidades y muestra la indicación de abrir o cerrar; `OndaSDoor.cs` reproduce los estados de animación del kit y mantiene el estado de la puerta. Los controles antiguos de las puertas convertidas están desactivados en la copia. Para poder cerrar una puerta abierta hay que apuntar a la hoja en su nueva posición. La interacción requiere tener el cursor capturado en Game.
+
+El comando **OndaS > Configurar interacción con puertas** instala estos componentes en la escena de prueba para las puertas con los scripts y animadores compatibles del kit. Guarda la escena, por lo que debe usarse con cuidado si hay cambios en curso. Ventanas y otros objetos interactivos no están incluidos en esta conversión.
 
 ## Menú de editor y precauciones
 
