@@ -9,9 +9,10 @@ namespace OndaS.Gameplay.Items
     {
         private OndaSInventory inventory;
         private TextMeshProUGUI[] labels;
-        private TextMeshProUGUI weightLabel;
+        private Image[] icons;
+        private Image[] frames;
         private int selected;
-
+        public int Selected => selected;
         public void Initialize(OndaSInventory source)
         {
             inventory = source;
@@ -21,57 +22,43 @@ namespace OndaS.Gameplay.Items
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             scaler.referenceResolution = new Vector2(1920, 1080);
             scaler.matchWidthOrHeight = 0.5f;
-            labels = new TextMeshProUGUI[OndaSInventory.Capacity];
-            for (int i = 0; i < labels.Length; i++)
+            labels = new TextMeshProUGUI[3]; icons = new Image[3]; frames = new Image[3];
+            for (int i = 0; i < 3; i++)
             {
-                labels[i] = MakeLabel("Espacio " + (i + 1), new Vector2((i - 2) * 210, 70), new Vector2(205, 78), 30);
+                var slot = new GameObject("Slot " + (i + 1), typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                slot.transform.SetParent(transform, false);
+                var rect = slot.GetComponent<RectTransform>();
+                rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0);
+                rect.anchoredPosition = new Vector2((i - 1) * 165, 93);
+                rect.sizeDelta = new Vector2(150, 105);
+                frames[i] = slot.GetComponent<Image>(); frames[i].raycastTarget = false;
+                var iconObject = new GameObject("Icono", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                iconObject.transform.SetParent(slot.transform, false);
+                var ir = iconObject.GetComponent<RectTransform>(); ir.anchorMin = ir.anchorMax = new Vector2(0.5f, 0.65f); ir.sizeDelta = new Vector2(48, 48);
+                icons[i] = iconObject.GetComponent<Image>(); icons[i].preserveAspect = true; icons[i].raycastTarget = false;
+                var textObject = new GameObject("Nombre", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+                textObject.transform.SetParent(slot.transform, false);
+                var tr = textObject.GetComponent<RectTransform>(); tr.anchorMin = Vector2.zero; tr.anchorMax = Vector2.one; tr.offsetMin = new Vector2(4, 2); tr.offsetMax = new Vector2(-4, -2);
+                labels[i] = textObject.GetComponent<TextMeshProUGUI>(); OndaSTypography.Apply(labels[i]);
+                labels[i].fontSize = 24; labels[i].enableAutoSizing = true; labels[i].fontSizeMin = 14; labels[i].fontSizeMax = 24;
+                labels[i].alignment = TextAlignmentOptions.Bottom; labels[i].raycastTarget = false;
             }
-            weightLabel = MakeLabel("Peso", new Vector2(0, 140), new Vector2(1100, 42), 27);
-            inventory.Changed += Refresh;
-            Refresh();
+            inventory.Changed += Refresh; Refresh();
         }
-
-        public void Select(int slot)
-        {
-            if (slot < 0 || slot >= OndaSInventory.Capacity) return;
-            selected = slot;
-            Refresh();
-        }
-
-        public int Selected => selected;
-
-        private TextMeshProUGUI MakeLabel(string labelName, Vector2 position, Vector2 size, float fontSize)
-        {
-            var child = new GameObject(labelName, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            child.transform.SetParent(transform, false);
-            var rect = child.GetComponent<RectTransform>();
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0);
-            rect.anchoredPosition = position;
-            rect.sizeDelta = size;
-            var text = child.GetComponent<TextMeshProUGUI>();
-            OndaSTypography.Apply(text);
-            text.fontSize = fontSize;
-            text.enableAutoSizing = true;
-            text.fontSizeMin = 20;
-            text.fontSizeMax = fontSize;
-            text.alignment = TextAlignmentOptions.Center;
-            text.raycastTarget = false;
-            return text;
-        }
-
+        public void Select(int slot) { if (slot >= 0 && slot < 3) { selected = slot; Refresh(); } }
         private void Refresh()
         {
-            for (int i = 0; i < labels.Length; i++)
+            for (int i = 0; i < 3; i++)
             {
-                var item = inventory.GetItem(i);
-                labels[i].text = (selected == i ? "> " : "") + (i + 1) + "\n" + (item != null ? item.DisplayName : "—");
+                var item = i < 2 ? inventory.GetItem(i) : null;
+                var bag = i == 2 ? inventory.Backpack : null;
+                Sprite icon = item != null && item.Item != null ? item.Item.Icon : bag != null ? bag.Icon : null;
+                icons[i].sprite = icon; icons[i].enabled = icon != null;
+                var name = i == 2 ? (bag != null ? "MOCHILA" : "SIN MOCHILA") : item != null && item.Item != null ? item.Item.DisplayName : "VACÍO";
+                labels[i].text = (i + 1) + "  " + name;
+                frames[i].color = i == selected ? new Color(0.35f, 0.29f, 0.12f, 0.8f) : new Color(0.10f, 0.10f, 0.08f, 0.55f);
             }
-            weightLabel.text = "MOCHILA  " + inventory.TotalWeightKg.ToString("0.0") + " / " + OndaSInventory.MaxWeightKg.ToString("0.0") + " kg   |   1–5: seleccionar   Q: soltar";
         }
-
-        private void OnDestroy()
-        {
-            if (inventory != null) inventory.Changed -= Refresh;
-        }
+        private void OnDestroy() { if (inventory != null) inventory.Changed -= Refresh; }
     }
 }

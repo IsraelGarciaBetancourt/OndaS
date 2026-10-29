@@ -929,13 +929,26 @@
         "y": 0.13890093564987183,
         "z": 0.17262707650661469
       }
+    },
+    {
+      "name": "Backpack",
+      "category": "Good Items",
+      "source": "Agua/Survival/Models/Survival.fbx [Backpack]",
+      "prefab": "Assets/OndaS/Items/Good Items/Backpack/Prefabs/Backpack.prefab",
+      "meshes": 1,
+      "triangles": 304,
+      "size": {
+        "x": 0.44999998807907104,
+        "y": 0.40787604451179504,
+        "z": 0.37390148639678955
+      }
     }
   ],
   "sourceRoot": "/Users/israelgarcia/Downloads/Onda S Descargas/Items",
   "counts": {
-    "Good Items": 63,
+    "Good Items": 64,
     "Bad Items": 8,
-    "total": 71
+    "total": 72
   },
   "classification": "Comida preparada (cajas de hamburguesa y pizza) en Bad Items por indicación del usuario. Good/Bad es una clasificación de diseño del juego."
 }

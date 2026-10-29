@@ -16,3 +16,4 @@ MonoBehaviour:
   category: 1
   weightKg: 0.5
   worldPrefab: {fileID: 1719929596316741911, guid: 96038b2e58e4541e386aa813ea7af9bf, type: 3}
+  icon: {fileID: 21300000, guid: dffde5cf2467f4171be35e1b3bab6380, type: 3}

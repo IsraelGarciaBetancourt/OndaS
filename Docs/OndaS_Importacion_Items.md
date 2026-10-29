@@ -2,7 +2,7 @@
 
 Origen: `/Users/israelgarcia/Downloads/Onda S Descargas/Items`.
 
-Los recursos seleccionados están en `Assets/OndaS/Items`, organizados en **Good Items** y **Bad Items**. Se generaron **71 prefabs**: **63 Good Items** y **8 Bad Items**. Los números incluyen variantes de modelo y de textura. El catálogo técnico está en `Assets/OndaS/Items/Catalogo_Items.json`.
+Los recursos seleccionados están en `Assets/OndaS/Items`, organizados en **Good Items** y **Bad Items**. Se generaron **72 prefabs**: **64 Good Items** y **8 Bad Items**. Los números incluyen variantes de modelo y de textura. El catálogo técnico está en `Assets/OndaS/Items/Catalogo_Items.json`.
 
 Esta clasificación sirve al diseño de la mochila del juego. Por indicación del usuario, la comida preparada queda en Bad Items. La llave inglesa se ha considerado útil para tareas de emergencia; la clasificación podrá ajustarse cuando se definan los efectos y pesos de inventario.
 
@@ -12,7 +12,7 @@ Esta clasificación sirve al diseño de la mochila del juego. Por indicación de
 
 | Carpeta de origen | Selección | Destino | Prefabs |
 |---|---|---|---:|
-| Agua | Únicamente `Water` de la colección Survival; textura `Water.png` | Good Items/Agua | 1 |
+| Agua | `Water` y la mochila `Backpack`; texturas `Water.png` y `Backpack.png` | Good Items/Agua y Backpack | 2 |
 | Alimentos | 52 alimentos envasados/conservas; 2 cajas de hamburguesa y 1 caja de pizza | Good Items/Alimentos y Bad Items/Alimentos | 55 |
 | Libros | `Book1`, `Book2`, `Book3`; textura `books.png` | Bad Items/Libros | 3 |
 | Linterna y Radio | Linterna con botón y radio con antena, mandos y altavoz; excluidos cuchillo, llave y candado | Good Items/Linterna y Radio_Horror | 2 |
@@ -39,7 +39,7 @@ Esta clasificación sirve al diseño de la mochila del juego. Por indicación de
 
 ## Comprobación
 
-Se revisaron las vistas previas de los modelos y se comprobó en Unity que cada prefab tenga malla, UV, materiales, al menos una superficie texturizada y ninguna dependencia de la carpeta temporal de importación. Las tapas de los vasos conservan el color plano que tenían en el original. La validación final revisó 71 prefabs y 90 renderers, con 0 errores de referencias. La escena abierta se mantuvo guardada y sin cambios.
+Se revisaron las vistas previas de los modelos y se comprobó en Unity que cada prefab tenga malla, UV, materiales, al menos una superficie texturizada y ninguna dependencia de la carpeta temporal de importación. Las tapas de los vasos conservan el color plano que tenían en el original. La validación inicial revisó 71 prefabs y 90 renderers, con 0 errores de referencias. La escena abierta se mantuvo guardada y sin cambios.
 
 ## Créditos
 
@@ -121,9 +121,11 @@ Consultar `Assets/OndaS/Items/_Sources/CREDITOS_Y_PROCEDENCIA.txt` y los textos 
 | Manta_Azul | Good Items | 15409 | `Assets/OndaS/Items/Good Items/Manta/Prefabs/Manta_Azul.prefab` |
 | Mascarilla_Limpia | Good Items | 546 | `Assets/OndaS/Items/Good Items/Mascarilla/Prefabs/Mascarilla_Limpia.prefab` |
 
+| Backpack | Good Items | 304 | `Assets/OndaS/Items/Good Items/Backpack/Prefabs/Backpack.prefab` |
+
 ## Resaltado de ítems
 
-El shader compartido `OndaS/ItemLit` añade un borde claro y una iluminación tenue sobre la textura para distinguir los ítems cercanos en interiores oscuros. Se aplica a los 71 prefabs de la biblioteca mediante sus materiales existentes. Good Items y Bad Items usan el mismo efecto para que su categoría no quede revelada por el color.
+El shader compartido `OndaS/ItemLit` añade un borde claro y una iluminación tenue sobre la textura para distinguir los ítems cercanos en interiores oscuros. Se aplica a los 72 prefabs de la biblioteca mediante sus materiales existentes. Good Items y Bad Items usan el mismo efecto para que su categoría no quede revelada por el color.
 
 El efecto depende de la distancia a la cámara que renderiza la imagen. Tiene intensidad completa hasta 3,5 m y se desvanece hasta desaparecer a 5 m. El pulso es leve y el resaltado utiliza la profundidad normal del modelo, por lo que queda oculto detrás de superficies opacas. No crea luces sobre el escenario ni necesita colliders o scripts en los prefabs.
 
@@ -138,3 +140,7 @@ Los parámetros están disponibles en cada material:
 | Pulse Speed | 1,5 rad/s | Ritmo del pulso; 0 lo deja constante |
 
 [Comparación de agua, botiquín y libro en poca luz](OndaS_Items_Resaltado.png). La prueba de render comparó el efecto desactivado, a corta distancia y fuera de alcance; este último coincidió con el aspecto sin resaltado. Unity comprobó los parámetros en los 73 materiales de la biblioteca y no reportó errores de compilación. La vista Scene también calcula el efecto desde su propia cámara.
+
+### Mochila Backpack
+
+Se añadió como Good Item el objeto `Backpack` de la colección Survival. La segunda variante `Backpack.001` no forma parte del prefab. La mochila tiene 304 triángulos, conserva las UV y usa `Backpack.png` con filtrado Point, sin mipmaps y sin compresión. Su dimensión mayor es 0,45 m y el pivote está en la base. Usa `OndaS/ItemLit` con el resaltado común. Se extrajo la malla a un asset independiente para evitar importar los demás objetos del paquete. El prefab tiene collider, Rigidbody y `OndaSBackpack`; su funcionamiento se describe en [OndaS_Inventario.md](OndaS_Inventario.md).
