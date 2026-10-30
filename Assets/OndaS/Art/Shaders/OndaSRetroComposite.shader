@@ -9,6 +9,7 @@ Shader "OndaS/RetroComposite"
         _Quantization ("Color reduction strength", Range(0,1)) = 0.3
         _Desaturation ("Desaturation", Range(0,1)) = 0.12
         _Vignette ("Vignette", Range(0,1)) = 0.08
+        _Blackout ("Blackout shadow depth", Range(0,1)) = 0
     }
     SubShader
     {
@@ -26,7 +27,7 @@ Shader "OndaS/RetroComposite"
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
             fixed4 _Color;
-            float _Levels, _Dither, _Quantization, _Desaturation, _Vignette;
+            float _Levels, _Dither, _Quantization, _Desaturation, _Vignette, _Blackout;
             v2f vert(appdata v) { v2f o; o.vertex=UnityObjectToClipPos(v.vertex); o.uv=v.uv; o.color=v.color; return o; }
             fixed4 frag(v2f i) : SV_Target
             {
@@ -39,6 +40,8 @@ Shader "OndaS/RetroComposite"
                 else if (p.y < 3) d = p.x < 1 ? 3 : (p.x < 2 ? 11 : (p.x < 3 ? 1 : 9));
                 else d = p.x < 1 ? 15 : (p.x < 2 ? 7 : (p.x < 3 ? 13 : 5));
                 float3 c = tex2D(_MainTex, i.uv).rgb * _Color.rgb * i.color.rgb;
+                // Keep a little detail in the shadows and preserve the flashlight beam.
+                c = max(0, c - 0.015 * _Blackout) * (1.0 + 0.02 * _Blackout);
                 float lum = dot(c, float3(0.299, 0.587, 0.114));
                 c = lerp(c, lum.xxx, _Desaturation);
                 float2 v = i.uv * 2.0 - 1.0;

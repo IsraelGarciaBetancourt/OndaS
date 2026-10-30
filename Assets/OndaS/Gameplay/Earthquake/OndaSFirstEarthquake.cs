@@ -17,6 +17,11 @@ namespace OndaS.Gameplay.Earthquake
         [SerializeField, Range(0f, 2f)] private float cameraStrength = 1.3f;
         [SerializeField] private float roomShakeDegrees = 4f;
         [SerializeField] private int brokenWindowPanels = 2;
+        [SerializeField, Range(0.1f, 0.9f)] private float blackoutMoment = 0.5f;
+        [Header("Polvo del sismo")]
+        [SerializeField, Min(0f)] private float quakeFogDensity = 0.11f;
+        [SerializeField, Range(0f, 1f)] private float settledDustFraction = 0.85f;
+        [SerializeField] private Color dustFogColor = new Color(0.29f, 0.28f, 0.25f);
 
         private sealed class Prop
         {
@@ -41,6 +46,11 @@ namespace OndaS.Gameplay.Earthquake
         private Quaternion cameraOriginalRotation;
         private Vector3 cameraOriginalPosition, cameraOriginalScale;
         private ParticleSystem dustTemplate;
+        private ParticleSystem suspendedDust;
+        private bool originalFogEnabled, ownsDustFog;
+        private FogMode originalFogMode;
+        private Color originalFogColor;
+        private float originalFogDensity, originalFogStart, originalFogEnd, dustFraction;
         private AudioSource rumble;
         private AudioClip rumbleClip, impactClip, glassClip;
         private GameObject countdownCanvas;
@@ -48,6 +58,7 @@ namespace OndaS.Gameplay.Earthquake
         private int displayedSeconds = -1;
         private float elapsed, shakeElapsed, intensity;
         private bool started, finished;
+        private bool powerCut;
         private int brokenCount;
 
         private void Awake()
@@ -140,7 +151,8 @@ namespace OndaS.Gameplay.Earthquake
             if (lampGroup != null)
                 foreach (var light in lampGroup.GetComponentsInChildren<Light>(true))
                 { lights.Add(light); lightIntensities.Add(light.intensity); }
-            dustTemplate = GetComponentInChildren<ParticleSystem>(true);
+            var ambientDust = transform.Find("OndaS - Polvo ambiental");
+            dustTemplate = ambientDust != null ? ambientDust.GetComponent<ParticleSystem>() : null;
 
             var windows = GameObject.Find("Structure_03/Exterior/Walls/8th Floor/Windows");
             if (windows != null)
@@ -166,7 +178,7 @@ namespace OndaS.Gameplay.Earthquake
 
         private void Update()
         {
-            if (finished) return;
+            if (finished) { UpdateDust(); return; }
             if (!started)
             {
                 elapsed += Time.deltaTime;
@@ -179,9 +191,10 @@ namespace OndaS.Gameplay.Earthquake
             float envelope = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.13f)) * Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((1f - t) / 0.2f));
             float pulses = 0.55f + 0.45f * Mathf.PerlinNoise(shakeElapsed * 0.32f, 1.7f);
             intensity = envelope * pulses;
+            UpdateDust();
             if (rumble != null) rumble.volume = PlayerOnFloor() ? intensity * 0.55f : 0f;
             AnimateProps();
-            AnimateLights();
+            UpdateSeismicPower();
             while (brokenCount < Mathf.Min(brokenWindowPanels, glassPanels.Count) && shakeElapsed >= 11f + brokenCount * 6f)
             {
                 BreakGlass(glassPanels[brokenCount]);
@@ -195,6 +208,7 @@ namespace OndaS.Gameplay.Earthquake
             if (started) return;
             started = true;
             shakeElapsed = 0f;
+            CreateSuspendedDust();
             if (countdownText != null) countdownText.text = "0:00";
             if (countdownLabel != null) countdownLabel.text = "SISMO";
             if (rumble != null) rumble.Play();
@@ -318,10 +332,25 @@ namespace OndaS.Gameplay.Earthquake
             collider.size = localBounds.size;
         }
 
-        private void AnimateLights()
+        private void UpdateSeismicPower()
         {
-            for (int i = 0; i < lights.Count; i++)
-                if (lights[i] != null) lights[i].intensity = lightIntensities[i] * (1f - intensity * 0.3f * Mathf.PerlinNoise(shakeElapsed * 12f, i + 1f));
+            var playerLighting = player != null ? player.GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>() : null;
+            if (playerLighting == null || powerCut) return;
+            float secondsToCut = duration * blackoutMoment - shakeElapsed;
+            if (secondsToCut <= 0f)
+            {
+                powerCut = true;
+                playerLighting.TriggerSeismicBlackout();
+                Debug.Log("OndaS: apagón durante el sismo.", this);
+                return;
+            }
+            bool flicker = (secondsToCut < 4.0f && secondsToCut > 3.72f) ||
+                           (secondsToCut < 3.15f && secondsToCut > 2.92f) ||
+                           (secondsToCut < 2.15f && secondsToCut > 1.90f) ||
+                           (secondsToCut < 1.15f && secondsToCut > 0.98f) ||
+                           (secondsToCut < 0.57f && secondsToCut > 0.40f) ||
+                           (secondsToCut < 0.18f);
+            playerLighting.SetSeismicFlicker(flicker ? 0.05f : 1f);
         }
 
         private void BreakGlass(Transform glass)
@@ -395,8 +424,86 @@ namespace OndaS.Gameplay.Earthquake
             if (dustTemplate == null) return;
             var dust = Instantiate(dustTemplate, new Vector3(position.x, transform.position.y + 3f, position.z), Quaternion.identity, transform);
             dust.name = "OndaS - polvo de impacto";
+            foreach (var light in dust.GetComponentsInChildren<Light>(true)) light.enabled = false;
             dust.Play();
             Destroy(dust.gameObject, 4f);
+        }
+
+        private void CreateSuspendedDust()
+        {
+            if (dustTemplate == null || suspendedDust != null) return;
+            suspendedDust = Instantiate(dustTemplate, transform);
+            suspendedDust.name = "OndaS - Polvo suspendido del sismo";
+            foreach (var light in suspendedDust.GetComponentsInChildren<Light>(true)) light.enabled = false;
+            suspendedDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            var main = suspendedDust.main;
+            main.playOnAwake = false;
+            main.loop = true;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(5f, 9f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.02f, 0.12f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.12f);
+            main.startColor = new Color(0.72f, 0.69f, 0.61f, 0.65f);
+            main.maxParticles = 180;
+            var emission = suspendedDust.emission;
+            emission.enabled = true;
+            emission.rateOverTime = 24f;
+            var shape = suspendedDust.shape;
+            shape.enabled = true;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = new Vector3(9f, 2.4f, 9f);
+            suspendedDust.Play();
+        }
+
+        private void UpdateDust()
+        {
+            if (!started) return;
+            float target = finished ? settledDustFraction : 1f;
+            dustFraction = Mathf.MoveTowards(dustFraction, target, Time.deltaTime / (finished ? 12f : 7f));
+            bool onFloor = PlayerOnFloor();
+            if (onFloor)
+            {
+                if (!ownsDustFog)
+                {
+                    originalFogEnabled = RenderSettings.fog;
+                    originalFogMode = RenderSettings.fogMode;
+                    originalFogColor = RenderSettings.fogColor;
+                    originalFogDensity = RenderSettings.fogDensity;
+                    originalFogStart = RenderSettings.fogStartDistance;
+                    originalFogEnd = RenderSettings.fogEndDistance;
+                    ownsDustFog = true;
+                }
+                RenderSettings.fog = true;
+                RenderSettings.fogMode = FogMode.ExponentialSquared;
+                RenderSettings.fogDensity = Mathf.Lerp(originalFogEnabled && originalFogMode == FogMode.ExponentialSquared ? originalFogDensity : 0f, quakeFogDensity, dustFraction);
+                var playerLighting = player != null ? player.GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>() : null;
+                Color activeDustColor = playerLighting != null && playerLighting.IsBlackout ? new Color(0.006f, 0.007f, 0.009f) : dustFogColor;
+                RenderSettings.fogColor = Color.Lerp(originalFogColor, activeDustColor, dustFraction);
+            }
+            else RestoreFog();
+
+            if (suspendedDust == null) return;
+            if (onFloor)
+            {
+                suspendedDust.transform.position = new Vector3(player.position.x, transform.position.y + 1.5f, player.position.z);
+                var emission = suspendedDust.emission;
+                emission.rateOverTime = Mathf.Lerp(4f, 24f, dustFraction);
+                if (!suspendedDust.isPlaying) suspendedDust.Play();
+            }
+            else if (suspendedDust.isPlaying)
+                suspendedDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
+
+        private void RestoreFog()
+        {
+            if (!ownsDustFog) return;
+            RenderSettings.fog = originalFogEnabled;
+            RenderSettings.fogMode = originalFogMode;
+            RenderSettings.fogColor = originalFogColor;
+            RenderSettings.fogDensity = originalFogDensity;
+            RenderSettings.fogStartDistance = originalFogStart;
+            RenderSettings.fogEndDistance = originalFogEnd;
+            ownsDustFog = false;
         }
 
         private IEnumerator PlayImpactAfterDelay(Transform target, float delay)
@@ -488,6 +595,8 @@ namespace OndaS.Gameplay.Earthquake
 
         private void OnDestroy()
         {
+            RestoreFog();
+            if (suspendedDust != null) Destroy(suspendedDust.gameObject);
             if (cameraTransform != null && cameraOriginalParent != null)
             {
                 cameraTransform.SetParent(cameraOriginalParent, false);
@@ -501,6 +610,12 @@ namespace OndaS.Gameplay.Earthquake
             if (rumbleClip != null) Destroy(rumbleClip);
             if (impactClip != null) Destroy(impactClip);
             if (glassClip != null) Destroy(glassClip);
+        }
+
+        private void OnDisable()
+        {
+            RestoreFog();
+            if (suspendedDust != null) suspendedDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 }

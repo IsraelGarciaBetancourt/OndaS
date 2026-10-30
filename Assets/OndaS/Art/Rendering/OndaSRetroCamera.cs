@@ -16,6 +16,7 @@ namespace OndaS.Visual
         private GameObject displayObject;
         private GameObject displayCameraObject;
         private RawImage display;
+        private Material displayMaterial;
         private int lastWidth;
         private int lastHeight;
 
@@ -43,7 +44,8 @@ namespace OndaS.Visual
             imageObject.transform.SetParent(displayObject.transform, false);
             display = imageObject.GetComponent<RawImage>();
             display.raycastTarget = false;
-            display.material = compositeMaterial;
+            displayMaterial = compositeMaterial != null ? new Material(compositeMaterial) : null;
+            display.material = displayMaterial;
             var rect = imageObject.GetComponent<RectTransform>();
             rect.anchorMin = Vector2.zero;
             rect.anchorMax = Vector2.one;
@@ -61,6 +63,13 @@ namespace OndaS.Visual
         {
             if (lastWidth != Screen.width || lastHeight != Screen.height ||
                 (worldTexture != null && worldTexture.height != verticalResolution)) Resize();
+        }
+
+        public void SetPowerState(float brightness, bool blackout)
+        {
+            if (display != null) display.color = new Color(brightness, brightness, brightness, 1f);
+            if (displayMaterial != null && displayMaterial.HasProperty("_Blackout"))
+                displayMaterial.SetFloat("_Blackout", blackout ? 1f : 0f);
         }
 
         private void Resize()
@@ -92,6 +101,7 @@ namespace OndaS.Visual
             if (worldTexture != null) { worldTexture.Release(); Destroy(worldTexture); worldTexture = null; }
             if (displayObject != null) Destroy(displayObject);
             if (displayCameraObject != null) Destroy(displayCameraObject);
+            if (displayMaterial != null) Destroy(displayMaterial);
         }
     }
 }

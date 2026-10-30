@@ -178208,27 +178208,27 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1322557891476187358, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Size.x
-      value: 0.2622318
+      value: 0.21248983
       objectReference: {fileID: 0}
     - target: {fileID: 1322557891476187358, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Size.y
-      value: 0.2744889
+      value: 0.36440745
       objectReference: {fileID: 0}
     - target: {fileID: 1322557891476187358, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Size.z
-      value: 0.24436186
+      value: 0.27842745
       objectReference: {fileID: 0}
     - target: {fileID: 1322557891476187358, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Center.x
-      value: 0.0061159097
+      value: -0.0910237
       objectReference: {fileID: 0}
     - target: {fileID: 1322557891476187358, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Center.y
-      value: 0.12775554
+      value: 0.18612921
       objectReference: {fileID: 0}
     - target: {fileID: 1322557891476187358, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Center.z
-      value: 0.10218092
+      value: 0.002706877
       objectReference: {fileID: 0}
     - target: {fileID: 3069978462726329585, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_Name
@@ -178236,15 +178236,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3763237707931553512, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3.03
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3763237707931553512, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3.03
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3763237707931553512, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3.03
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3763237707931553512, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_LocalPosition.x
@@ -178252,7 +178252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3763237707931553512, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 28.946
+      value: 29.193
       objectReference: {fileID: 0}
     - target: {fileID: 3763237707931553512, guid: a1890fa2bbaec4d15bd8bfb1c81fd927, type: 3}
       propertyPath: m_LocalPosition.z
@@ -288274,6 +288274,9 @@ MonoBehaviour:
   cameraStrength: 1.3
   roomShakeDegrees: 4
   brokenWindowPanels: 2
+  quakeFogDensity: 0.11
+  settledDustFraction: 0.85
+  dustFogColor: {r: 0.29, g: 0.28, b: 0.25, a: 1}
 --- !u!1 &1051785706
 GameObject:
   m_ObjectHideFlags: 0
