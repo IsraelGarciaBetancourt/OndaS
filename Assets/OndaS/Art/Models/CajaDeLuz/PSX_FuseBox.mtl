@@ -1,0 +1,99 @@
+newmtl Carcasa_Metal_PSX
+Kd 1 1 1
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+map_Kd PSX_Carcasa_Metal.png
+
+newmtl Puerta_Metal_PSX
+Kd 1 1 1
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+map_Kd PSX_Puerta_Metal.png
+
+newmtl Tubo_Conduit_Oxidado
+Kd 1 1 1
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+map_Kd PSX_Tubo_Oxidado.png
+
+newmtl Modulo_Breakers_Sucio
+Kd 1 1 1
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+map_Kd PSX_Breakers_128.png
+
+newmtl Cable_Rojo
+Kd 0.49 0.055 0.045
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Cable_Negro
+Kd 0.055 0.057 0.05
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Cable_Verde
+Kd 0.035 0.35 0.075
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Switch_Azul_01
+Kd 0.03 0.095 0.43
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Switch_Azul_02
+Kd 0.03 0.095 0.43
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Switch_Azul_03
+Kd 0.03 0.095 0.43
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Switch_Azul_04
+Kd 0.03 0.095 0.43
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2
+
+newmtl Switch_Azul_05
+Kd 0.03 0.095 0.43
+Ka 0 0 0
+Ks 0 0 0
+Ns 2
+d 1
+illum 2

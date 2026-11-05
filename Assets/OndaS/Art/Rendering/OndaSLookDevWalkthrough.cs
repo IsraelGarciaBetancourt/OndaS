@@ -52,6 +52,8 @@ namespace OndaS.Visual
         private readonly List<MaterialPropertyBlock> originalPropertyBlocks = new List<MaterialPropertyBlock>();
         private float standingHeight, standingBottom, standingCameraY;
         private bool crouchRequested;
+        private bool sheltering;
+        private Vector3 shelterExit;
         private float stamina;
         private float recoveryWait;
         private bool exhausted;
@@ -60,6 +62,7 @@ namespace OndaS.Visual
         private readonly Collider[] clearanceHits = new Collider[32];
         public bool IsSprinting { get; private set; }
         public bool IsCrouching => controller != null && controller.height < standingHeight - 0.01f;
+        public bool IsSheltering => sheltering;
         public float Stamina => stamina;
         public float MaxStamina => maxStamina;
         public bool IsExhausted => exhausted;
@@ -96,6 +99,7 @@ namespace OndaS.Visual
             torch.color = new Color(1f, 0.91f, 0.73f);
             torch.shadows = LightShadows.Soft;
             torch.enabled = false;
+            lightObject.AddComponent<OndaSFlashlightAutoDim>().Initialize(torch, transform);
             var fillObject = new GameObject("OndaS - Luz tenue nocturna");
             nightFill = fillObject.AddComponent<Light>();
             nightFill.type = LightType.Directional;
@@ -115,8 +119,8 @@ namespace OndaS.Visual
                 UpdateStamina(false, false, Time.deltaTime);
                 return;
             }
-            if (keyboard.cKey.wasPressedThisFrame) crouchRequested = !crouchRequested;
-            UpdatePosture();
+            if (!sheltering && keyboard.cKey.wasPressedThisFrame) crouchRequested = !crouchRequested;
+            if (!sheltering) UpdatePosture();
             if (keyboard.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
             if (mouse != null && mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
             { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
@@ -129,6 +133,7 @@ namespace OndaS.Visual
             }
             Vector2 input = new Vector2((keyboard.dKey.isPressed ? 1 : 0) - (keyboard.aKey.isPressed ? 1 : 0),
                                        (keyboard.wKey.isPressed ? 1 : 0) - (keyboard.sKey.isPressed ? 1 : 0));
+            if (sheltering) input = Vector2.zero;
             input = Vector2.ClampMagnitude(input, 1f);
             bool sprintHeld = keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed;
             bool wantsSprint = !IsCrouching && !crouchRequested && input.sqrMagnitude > 0f && sprintHeld;
@@ -138,10 +143,46 @@ namespace OndaS.Visual
             verticalSpeed += -15f * Time.deltaTime;
             controller.Move(((transform.right * input.x + transform.forward * input.y) * moveSpeed + Vector3.up * verticalSpeed) * Time.deltaTime);
             if (keyboard.bKey.wasPressedThisFrame && !seismicBlackout) SetBlackout(!blackout);
-            if (keyboard.fKey.wasPressedThisFrame) torch.enabled = !torch.enabled;
+            if (keyboard.fKey.wasPressedThisFrame) ToggleFlashlight();
         }
 
+        public void ToggleFlashlight() { if (torch != null) torch.enabled = !torch.enabled; }
+
         public void ToggleBlackoutPreview() { if (!seismicBlackout) SetBlackout(!blackout); }
+
+        public void EnterShelter(Vector3 position, float height)
+        {
+            shelterExit = transform.position;
+            sheltering = true;
+            crouchRequested = true;
+            controller.height = Mathf.Max(controller.radius * 2f, height);
+            var center = controller.center;
+            center.y = standingBottom + controller.height * 0.5f;
+            controller.center = center;
+            var cameraPosition = viewCamera.transform.localPosition;
+            cameraPosition.y = standingCameraY - (standingHeight - controller.height);
+            viewCamera.transform.localPosition = cameraPosition;
+            controller.enabled = false;
+            transform.position = position;
+            controller.enabled = true;
+            verticalSpeed = 0f;
+        }
+
+        public bool LeaveShelter()
+        {
+            if (!sheltering) return false;
+            float radius = Mathf.Max(0.01f, controller.radius - 0.02f);
+            Vector3 bottom = shelterExit + Vector3.up * (standingBottom + radius + 0.03f);
+            Vector3 top = shelterExit + Vector3.up * (standingBottom + controller.height - radius - 0.03f);
+            foreach (var hit in Physics.OverlapCapsule(bottom, top, radius, ~0, QueryTriggerInteraction.Ignore))
+                if (!hit.transform.IsChildOf(transform)) return false;
+            controller.enabled = false;
+            transform.position = shelterExit;
+            controller.enabled = true;
+            sheltering = false;
+            verticalSpeed = 0f;
+            return true;
+        }
 
         public void TriggerSeismicBlackout()
         {

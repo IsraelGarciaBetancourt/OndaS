@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 using TMPro;
 using OndaS.Gameplay.UI;
 using OndaS.Gameplay.Items;
+using OndaS.Gameplay.Earthquake;
+using OndaS.Gameplay.Electrical;
 
 namespace OndaS.Gameplay
 {
@@ -21,10 +23,13 @@ namespace OndaS.Gameplay
         private OndaSBackpack focusedBag;
         private float messageUntil;
         private string message;
+        private OndaSShelterInteraction shelter;
+        private OndaSFuseBox inspectedFuseBox;
         private void Awake()
         {
             if (viewCamera == null) viewCamera = GetComponentInChildren<Camera>();
             inventory = GetComponent<OndaSInventory>();
+            shelter = new OndaSShelterInteraction(transform, viewCamera, GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>());
             if (inventory == null) inventory = gameObject.AddComponent<OndaSInventory>();
             CreatePrompt();
             var hud = new GameObject("Inventory UI", typeof(RectTransform)); inventoryHud = hud.AddComponent<OndaSInventoryHud>(); inventoryHud.Initialize(inventory);
@@ -33,6 +38,13 @@ namespace OndaS.Gameplay
         }
         private void Update()
         {
+            if (inspectedFuseBox != null)
+            {
+                if (!inspectedFuseBox.IsInspecting) { inspectedFuseBox = null; ShowPrompt(null); return; }
+                inspectedFuseBox.HandleInspectionInput();
+                ShowPrompt(inspectedFuseBox.IsInspecting ? "CLIC: MOVER INTERRUPTOR    [E] CERRAR" : null);
+                return;
+            }
             if (viewCamera == null || Cursor.lockState != CursorLockMode.Locked)
             { CancelRadial(); ShowPrompt(null); return; }
             var keyboard = Keyboard.current;
@@ -62,6 +74,16 @@ namespace OndaS.Gameplay
                     }
                     ShowPrompt(null);
                 }
+                return;
+            }
+            if (shelter != null && shelter.Update(keyboard, out var shelterPrompt))
+            { ShowPrompt(shelterPrompt); return; }
+            var fuseBox = hitSomething ? hit.collider.GetComponentInParent<OndaSFuseBox>() : null;
+            if (fuseBox != null)
+            {
+                if (keyboard != null && keyboard.eKey.wasPressedThisFrame && fuseBox.BeginInspection(viewCamera, GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>()))
+                    inspectedFuseBox = fuseBox;
+                ShowPrompt("[E] Para abrir");
                 return;
             }
             if (keyboard != null)
@@ -98,7 +120,7 @@ namespace OndaS.Gameplay
             ShowPrompt(door != null && door.CanInteract ? (door.IsOpen ? "[E] Cerrar puerta" : "[E] Abrir puerta") : null);
         }
         private void CancelRadial() { if (radial != null && radial.Active) radial.Close(); focusedBag = null; }
-        private void OnDisable() { CancelRadial(); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }
+        private void OnDisable() { if (inspectedFuseBox != null) inspectedFuseBox.InterruptInspection(); inspectedFuseBox = null; CancelRadial(); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }
         private void OnEnable() { if (inventoryHud != null) inventoryHud.gameObject.SetActive(true); }
         private void OnDestroy()
         {

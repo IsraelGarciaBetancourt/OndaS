@@ -4,6 +4,7 @@ using OndaS.Gameplay.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace OndaS.Gameplay.Earthquake
@@ -18,6 +19,9 @@ namespace OndaS.Gameplay.Earthquake
         [SerializeField] private float roomShakeDegrees = 4f;
         [SerializeField] private int brokenWindowPanels = 2;
         [SerializeField, Range(0.1f, 0.9f)] private float blackoutMoment = 0.5f;
+        [Header("Supervivencia")]
+        [SerializeField, Min(0.1f)] private float initialShelterSeconds = 8f;
+        [SerializeField, Min(0.1f)] private float returnToShelterSeconds = 3f;
         [Header("Polvo del sismo")]
         [SerializeField, Min(0f)] private float quakeFogDensity = 0.11f;
         [SerializeField, Range(0f, 1f)] private float settledDustFraction = 0.85f;
@@ -54,12 +58,17 @@ namespace OndaS.Gameplay.Earthquake
         private AudioSource rumble;
         private AudioClip rumbleClip, impactClip, glassClip;
         private GameObject countdownCanvas;
+        private GameObject defeatCanvas;
         private TextMeshProUGUI countdownText, countdownLabel;
         private int displayedSeconds = -1;
         private float elapsed, shakeElapsed, intensity;
         private bool started, finished;
         private bool powerCut;
+        private bool defeated, hasSheltered;
+        private float exposedSeconds;
+        private OndaS.Visual.OndaSLookDevWalkthrough playerMovement;
         private int brokenCount;
+        public bool HasFinished => finished && !defeated;
 
         private void Awake()
         {
@@ -71,6 +80,8 @@ namespace OndaS.Gameplay.Earthquake
             var playerObject = GameObject.Find("First Person Player");
             if (playerObject == null) { Debug.LogWarning("Sismo: no se encontró al jugador.", this); enabled = false; return; }
             player = playerObject.transform;
+            playerMovement = playerObject.GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>();
+            if (playerMovement == null) { Debug.LogWarning("Sismo: no se encontró el control del jugador.", this); enabled = false; return; }
             var camera = playerObject.GetComponentInChildren<Camera>(true);
             if (camera == null) { Debug.LogWarning("Sismo: no se encontró la cámara del jugador.", this); enabled = false; return; }
             SetupCamera(camera.transform);
@@ -120,7 +131,7 @@ namespace OndaS.Gameplay.Earthquake
             AddProp(apartment, "Living Room/Furniture/Chair_Apt_01 (1)", 21f, 0.4f);
             AddProp(apartment, "Living Room/Furniture/Chair_Apt_01 (2)", 8f, 0.8f);
             AddProp(apartment, "Living Room/Furniture/Chair_Apt_01 (3)", 16f, 0.7f);
-            AddProp(apartment, "Living Room/Furniture/Table_Apt_01", 14f, 0.65f, 0.65f, 0.045f);
+            // Shelter tables must keep their colliders stable while the player is underneath.
             AddProp(apartment, "Living Room/Furniture/Coffee_Table_Apt_01", 18f, 0.7f, 0.7f, 0.045f);
             AddProp(apartment, "Living Room/Furniture/Table_Side_Apt_01", 12f, 0.7f, 0.8f, 0.04f);
             AddProp(apartment, "Living Room/Furniture/Table_Side_Apt_01 (1)", 20f, 0.65f, 0.8f, 0.04f);
@@ -178,6 +189,13 @@ namespace OndaS.Gameplay.Earthquake
 
         private void Update()
         {
+            if (defeated)
+            {
+                var keyboard = Keyboard.current;
+                if (keyboard != null && (keyboard.rKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame || keyboard.numpadEnterKey.wasPressedThisFrame))
+                    SceneManager.LoadScene(gameObject.scene.path);
+                return;
+            }
             if (finished) { UpdateDust(); return; }
             if (!started)
             {
@@ -187,6 +205,8 @@ namespace OndaS.Gameplay.Earthquake
                 return;
             }
             shakeElapsed += Time.deltaTime;
+            UpdateSurvival();
+            if (defeated) return;
             float t = Mathf.Clamp01(shakeElapsed / duration);
             float envelope = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.13f)) * Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((1f - t) / 0.2f));
             float pulses = 0.55f + 0.45f * Mathf.PerlinNoise(shakeElapsed * 0.32f, 1.7f);
@@ -206,6 +226,8 @@ namespace OndaS.Gameplay.Earthquake
         private void Begin()
         {
             if (started) return;
+            var fuseBox = FindFirstObjectByType<OndaS.Gameplay.Electrical.OndaSFuseBox>();
+            if (fuseBox != null) fuseBox.InterruptInspection();
             started = true;
             shakeElapsed = 0f;
             CreateSuspendedDust();
@@ -213,6 +235,75 @@ namespace OndaS.Gameplay.Earthquake
             if (countdownLabel != null) countdownLabel.text = "SISMO";
             if (rumble != null) rumble.Play();
             Debug.Log("OndaS: comenzó el primer sismo en el piso 8.", this);
+        }
+
+        private void UpdateSurvival()
+        {
+            if (playerMovement.IsSheltering)
+            {
+                hasSheltered = true;
+                exposedSeconds = 0f;
+                if (countdownLabel != null) countdownLabel.text = "PROTEGIDO";
+                if (countdownText != null)
+                {
+                    countdownText.text = Mathf.CeilToInt(Mathf.Max(0f, duration - shakeElapsed)).ToString();
+                    countdownText.color = new Color32(255, 218, 65, 255);
+                }
+                return;
+            }
+            exposedSeconds += Time.deltaTime;
+            float remaining = (hasSheltered ? returnToShelterSeconds : initialShelterSeconds) - exposedSeconds;
+            if (countdownLabel != null) countdownLabel.text = "¡BUSCA REFUGIO!";
+            if (countdownText != null)
+            {
+                countdownText.text = Mathf.CeilToInt(Mathf.Max(0f, remaining)).ToString();
+                countdownText.color = new Color32(255, 120, 65, 255);
+            }
+            if (remaining <= 0f) Defeat();
+        }
+
+        private void Defeat()
+        {
+            if (defeated) return;
+            defeated = true;
+            finished = true;
+            intensity = 0f;
+            if (rumble != null) rumble.Stop();
+            if (countdownCanvas != null) countdownCanvas.SetActive(false);
+            if (playerMovement != null) playerMovement.enabled = false;
+            var interactor = player != null ? player.GetComponent<OndaS.Gameplay.OndaSDoorInteractor>() : null;
+            if (interactor != null) interactor.enabled = false;
+
+            defeatCanvas = new GameObject("OndaS - Derrota", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
+            var canvas = defeatCanvas.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+            var scaler = defeatCanvas.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            var background = new GameObject("Fondo", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            background.transform.SetParent(defeatCanvas.transform, false);
+            var backgroundRect = background.GetComponent<RectTransform>();
+            backgroundRect.anchorMin = Vector2.zero; backgroundRect.anchorMax = Vector2.one;
+            backgroundRect.offsetMin = backgroundRect.offsetMax = Vector2.zero;
+            background.GetComponent<Image>().color = new Color(0.015f, 0.01f, 0.01f, 0.98f);
+            CreateDefeatText("Título", "NO SOBREVIVISTE", new Vector2(0f, 80f), 72f, new Color32(220, 75, 55, 255));
+            CreateDefeatText("Motivo", "No encontraste refugio durante el sismo", new Vector2(0f, -15f), 32f, new Color32(230, 220, 200, 255));
+            CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -115f), 34f, new Color32(255, 218, 65, 255));
+            Debug.Log("OndaS: el jugador perdió por permanecer sin refugio durante el sismo.", this);
+        }
+
+        private void CreateDefeatText(string name, string value, Vector2 position, float size, Color color)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            go.transform.SetParent(defeatCanvas.transform, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = position; rect.sizeDelta = new Vector2(1200f, 100f);
+            var text = go.GetComponent<TextMeshProUGUI>();
+            OndaSTypography.Apply(text);
+            text.text = value; text.fontSize = size; text.color = color;
+            text.alignment = TextAlignmentOptions.Center; text.raycastTarget = false;
         }
 
         private void LateUpdate()
@@ -561,6 +652,7 @@ namespace OndaS.Gameplay.Earthquake
             if (seconds == displayedSeconds) return;
             displayedSeconds = seconds;
             countdownText.text = (seconds / 60) + ":" + (seconds % 60).ToString("00");
+            if (countdownLabel != null) countdownLabel.text = seconds <= 10 ? "BUSCA REFUGIO" : "PREPARACIÓN";
             countdownText.color = seconds <= 10 ? new Color32(255, 120, 65, 255) : new Color32(255, 218, 65, 255);
         }
 
@@ -606,6 +698,7 @@ namespace OndaS.Gameplay.Earthquake
             }
             if (cameraPivot != null) Destroy(cameraPivot.gameObject);
             if (countdownCanvas != null) Destroy(countdownCanvas);
+            if (defeatCanvas != null) Destroy(defeatCanvas);
             foreach (var mesh in generatedMeshes) if (mesh != null) Destroy(mesh);
             if (rumbleClip != null) Destroy(rumbleClip);
             if (impactClip != null) Destroy(impactClip);
