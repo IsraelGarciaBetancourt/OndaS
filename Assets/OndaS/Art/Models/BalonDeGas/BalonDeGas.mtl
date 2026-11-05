@@ -1,0 +1,17 @@
+newmtl Gas_PSX_1
+Kd 1 1 1
+Ka 0 0 0
+Ks 0.05 0.05 0.05
+Ns 4
+d 1
+illum 2
+map_Kd Gas_PSX_1.png
+
+newmtl Gas_PSX_2
+Kd 1 1 1
+Ka 0 0 0
+Ks 0.05 0.05 0.05
+Ns 4
+d 1
+illum 2
+map_Kd Gas_PSX_2.png

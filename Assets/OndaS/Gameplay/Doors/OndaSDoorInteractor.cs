@@ -5,6 +5,7 @@ using OndaS.Gameplay.UI;
 using OndaS.Gameplay.Items;
 using OndaS.Gameplay.Earthquake;
 using OndaS.Gameplay.Electrical;
+using OndaS.Gameplay.Gas;
 
 namespace OndaS.Gameplay
 {
@@ -25,6 +26,7 @@ namespace OndaS.Gameplay
         private string message;
         private OndaSShelterInteraction shelter;
         private OndaSFuseBox inspectedFuseBox;
+        private OndaSGasValve inspectedGasValve;
         private void Awake()
         {
             if (viewCamera == null) viewCamera = GetComponentInChildren<Camera>();
@@ -38,6 +40,13 @@ namespace OndaS.Gameplay
         }
         private void Update()
         {
+            if (inspectedGasValve != null)
+            {
+                if (!inspectedGasValve.IsInspecting) { inspectedGasValve = null; ShowPrompt(null); return; }
+                inspectedGasValve.HandleInspectionInput();
+                ShowPrompt(inspectedGasValve.IsInspecting ? (inspectedGasValve.IsClosed ? "CLIC: ABRIR VÁLVULA    [E] SALIR" : "CLIC: CERRAR VÁLVULA    [E] SALIR") : null);
+                return;
+            }
             if (inspectedFuseBox != null)
             {
                 if (!inspectedFuseBox.IsInspecting) { inspectedFuseBox = null; ShowPrompt(null); return; }
@@ -86,6 +95,14 @@ namespace OndaS.Gameplay
                 ShowPrompt("[E] Para abrir");
                 return;
             }
+            var gasValve = hitSomething ? hit.collider.GetComponentInParent<OndaSGasValve>() : null;
+            if (gasValve != null)
+            {
+                if (keyboard != null && keyboard.eKey.wasPressedThisFrame && gasValve.BeginInspection(viewCamera, GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>()))
+                    inspectedGasValve = gasValve;
+                ShowPrompt("[E] Inspeccionar válvula");
+                return;
+            }
             if (keyboard != null)
             {
                 int old = inventoryHud.Selected;
@@ -120,7 +137,7 @@ namespace OndaS.Gameplay
             ShowPrompt(door != null && door.CanInteract ? (door.IsOpen ? "[E] Cerrar puerta" : "[E] Abrir puerta") : null);
         }
         private void CancelRadial() { if (radial != null && radial.Active) radial.Close(); focusedBag = null; }
-        private void OnDisable() { if (inspectedFuseBox != null) inspectedFuseBox.InterruptInspection(); inspectedFuseBox = null; CancelRadial(); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }
+        private void OnDisable() { if (inspectedFuseBox != null) inspectedFuseBox.InterruptInspection(); if (inspectedGasValve != null) inspectedGasValve.InterruptInspection(); inspectedFuseBox = null; inspectedGasValve = null; CancelRadial(); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }
         private void OnEnable() { if (inventoryHud != null) inventoryHud.gameObject.SetActive(true); }
         private void OnDestroy()
         {

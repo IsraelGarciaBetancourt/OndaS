@@ -228,6 +228,8 @@ namespace OndaS.Gameplay.Earthquake
             if (started) return;
             var fuseBox = FindFirstObjectByType<OndaS.Gameplay.Electrical.OndaSFuseBox>();
             if (fuseBox != null) fuseBox.InterruptInspection();
+            var gasValve = FindFirstObjectByType<OndaS.Gameplay.Gas.OndaSGasValve>();
+            if (gasValve != null) gasValve.InterruptInspection();
             started = true;
             shakeElapsed = 0f;
             CreateSuspendedDust();
