@@ -176324,6 +176324,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5769129917905125718, guid: 3106a6f3c2fc2a547b55f8f47ff2e09c, type: 3}
   m_PrefabInstance: {fileID: 1803050189}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &629706806
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 26.351486
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 28.822966
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.7923879
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 679738309801838497, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8507584075547287016, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
+      propertyPath: m_Name
+      value: Linterna
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 89d3c9c043a714d9a900dfcfc5931263, type: 3}
 --- !u!1001 &629835055
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -343056,6 +343117,9 @@ MonoBehaviour:
   crouchHeightRatio: 0.6
   postureSpeed: 4
   mouseSensitivity: 0.1
+  sprintShakeFrequency: 12
+  sprintShakeDegrees: 1.5
+  sprintShakeTransition: 5
   maxStamina: 100
   sprintDrainPerSecond: 20
   staminaRecoveryPerSecond: 15
@@ -343080,6 +343144,13 @@ MonoBehaviour:
     m_Bits: 4294967295
   heldItemPosition: {x: 0.3, y: -0.25, z: 0.6}
   heldItemSize: 0.22
+  flashlightPosition: {x: 0.26, y: -0.245, z: 0.68}
+  flashlightRotation: {x: 0, y: -90, z: 0}
+  flashlightSize: 0.32
+  waterPosition: {x: 0.26, y: -0.32, z: 0.68}
+  waterRotation: {x: 0, y: 0, z: 0}
+  waterSize: 0.3
+  drinkDuration: 1.3
 --- !u!114 &1260469040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -586669,3 +586740,4 @@ SceneRoots:
   - {fileID: 1579230206}
   - {fileID: 538181068}
   - {fileID: 637556759}
+  - {fileID: 629706806}

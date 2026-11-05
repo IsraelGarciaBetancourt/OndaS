@@ -16,9 +16,24 @@ namespace OndaS.Gameplay
         [SerializeField] private LayerMask interactionLayers = ~0;
         [SerializeField] private Vector3 heldItemPosition = new Vector3(0.3f, -0.25f, 0.6f);
         [SerializeField, Min(0.05f)] private float heldItemSize = 0.22f;
+        [Header("Linterna en mano")]
+        [SerializeField] private Vector3 flashlightPosition = new Vector3(0.26f, -0.245f, 0.68f);
+        [SerializeField] private Vector3 flashlightRotation = new Vector3(0f, -90f, 0f);
+        [SerializeField, Min(0.05f)] private float flashlightSize = 0.32f;
+        [Header("Agua en mano")]
+        [SerializeField] private Vector3 waterPosition = new Vector3(0.26f, -0.32f, 0.68f);
+        [SerializeField] private Vector3 waterRotation = Vector3.zero;
+        [SerializeField, Min(0.05f)] private float waterSize = 0.30f;
+        [SerializeField, Min(0.2f)] private float drinkDuration = 1.3f;
         private GameObject promptCanvas, heldVisual;
+        private bool holdingFlashlight, holdingWater;
+        private OndaSCollectible drinkingItem;
+        private int drinkingSlot;
+        private float drinkElapsed, drinkPose;
         private TextMeshProUGUI promptText;
         private OndaSInventory inventory;
+        private OndaS.Visual.OndaSLookDevWalkthrough playerMovement;
+        private OndaSFirstPersonHands firstPersonHands;
         private OndaSInventoryHud inventoryHud;
         private OndaSBackpackRadial radial;
         private OndaSBackpack focusedBag;
@@ -31,7 +46,9 @@ namespace OndaS.Gameplay
         {
             if (viewCamera == null) viewCamera = GetComponentInChildren<Camera>();
             inventory = GetComponent<OndaSInventory>();
-            shelter = new OndaSShelterInteraction(transform, viewCamera, GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>());
+            playerMovement = GetComponent<OndaS.Visual.OndaSLookDevWalkthrough>();
+            firstPersonHands = viewCamera != null ? viewCamera.GetComponentInChildren<OndaSFirstPersonHands>(true) : null;
+            shelter = new OndaSShelterInteraction(transform, viewCamera, playerMovement);
             if (inventory == null) inventory = gameObject.AddComponent<OndaSInventory>();
             CreatePrompt();
             var hud = new GameObject("Inventory UI", typeof(RectTransform)); inventoryHud = hud.AddComponent<OndaSInventoryHud>(); inventoryHud.Initialize(inventory);
@@ -40,6 +57,15 @@ namespace OndaS.Gameplay
         }
         private void Update()
         {
+            if (heldVisual != null && playerMovement != null)
+                heldVisual.SetActive(playerMovement.enabled);
+            if (holdingFlashlight && heldVisual != null) UpdateFlashlightPose();
+            if (holdingWater && heldVisual != null) UpdateWaterPose();
+            if (drinkingItem != null)
+            {
+                UpdateDrinking();
+                return;
+            }
             if (inspectedGasValve != null)
             {
                 if (!inspectedGasValve.IsInspecting) { inspectedGasValve = null; ShowPrompt(null); return; }
@@ -87,6 +113,18 @@ namespace OndaS.Gameplay
             }
             if (shelter != null && shelter.Update(keyboard, out var shelterPrompt))
             { ShowPrompt(shelterPrompt); return; }
+            if (holdingWater && playerMovement != null && playerMovement.enabled && mouse != null && mouse.leftButton.wasPressedThisFrame)
+            {
+                if (playerMovement.Stamina < playerMovement.MaxStamina)
+                {
+                    drinkingSlot = inventoryHud.Selected;
+                    drinkingItem = inventory.GetItem(drinkingSlot);
+                    drinkElapsed = 0f;
+                }
+                else Notify("La estamina ya está llena");
+                ShowPrompt(null);
+                return;
+            }
             var fuseBox = hitSomething ? hit.collider.GetComponentInParent<OndaSFuseBox>() : null;
             if (fuseBox != null)
             {
@@ -137,8 +175,8 @@ namespace OndaS.Gameplay
             ShowPrompt(door != null && door.CanInteract ? (door.IsOpen ? "[E] Cerrar puerta" : "[E] Abrir puerta") : null);
         }
         private void CancelRadial() { if (radial != null && radial.Active) radial.Close(); focusedBag = null; }
-        private void OnDisable() { if (inspectedFuseBox != null) inspectedFuseBox.InterruptInspection(); if (inspectedGasValve != null) inspectedGasValve.InterruptInspection(); inspectedFuseBox = null; inspectedGasValve = null; CancelRadial(); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }
-        private void OnEnable() { if (inventoryHud != null) inventoryHud.gameObject.SetActive(true); }
+        private void OnDisable() { CancelDrinking(); if (inspectedFuseBox != null) inspectedFuseBox.InterruptInspection(); if (inspectedGasValve != null) inspectedGasValve.InterruptInspection(); inspectedFuseBox = null; inspectedGasValve = null; CancelRadial(); if (playerMovement != null) playerMovement.SetFlashlightEquipped(false); if (firstPersonHands != null) firstPersonHands.SetHoldingItem(false); if (heldVisual != null) heldVisual.SetActive(false); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }
+        private void OnEnable() { if (inventoryHud != null) { inventoryHud.gameObject.SetActive(true); RefreshHeld(); } }
         private void OnDestroy()
         {
             if (inventory != null) inventory.Changed -= RefreshHeld;
@@ -186,6 +224,10 @@ namespace OndaS.Gameplay
         {
             if (heldVisual != null) Destroy(heldVisual);
             var item = inventoryHud != null ? inventory.GetItem(inventoryHud.Selected) : null;
+            holdingFlashlight = item != null && item.Item != null && item.Item.IsFlashlight;
+            holdingWater = item != null && item.Item != null && item.Item.RestoresStamina;
+            if (playerMovement != null) playerMovement.SetFlashlightEquipped(holdingFlashlight);
+            if (firstPersonHands != null) firstPersonHands.SetHoldingItem(holdingFlashlight || holdingWater);
             if (item == null || item.Item == null || item.Item.WorldPrefab == null || viewCamera == null) return;
             heldVisual = Instantiate(item.Item.WorldPrefab, viewCamera.transform);
             heldVisual.name = "Held item visual (non-interactive)";
@@ -201,6 +243,52 @@ namespace OndaS.Gameplay
                 float largest = Mathf.Max(bounds.size.x, Mathf.Max(bounds.size.y, bounds.size.z));
                 if (largest > 0.001f) heldVisual.transform.localScale *= heldItemSize / largest;
             }
+            if (holdingFlashlight)
+                UpdateFlashlightPose();
+            else if (holdingWater)
+                UpdateWaterPose();
+        }
+        private void UpdateFlashlightPose()
+        {
+            // The prefab is modeled along +X and is 0.24 units long.
+            heldVisual.transform.localPosition = flashlightPosition;
+            heldVisual.transform.localRotation = Quaternion.Euler(flashlightRotation);
+            heldVisual.transform.localScale = Vector3.one * (flashlightSize / 0.24f);
+        }
+        private void UpdateWaterPose()
+        {
+            // The water prefab is modeled upright and is 0.28 units tall.
+            heldVisual.transform.localPosition = waterPosition + new Vector3(-0.10f, 0.08f, -0.16f) * drinkPose;
+            heldVisual.transform.localRotation = Quaternion.Euler(waterRotation) * Quaternion.Euler(-55f * drinkPose, 0f, 25f * drinkPose);
+            heldVisual.transform.localScale = Vector3.one * (waterSize / 0.28f);
+        }
+        private void UpdateDrinking()
+        {
+            if (playerMovement == null || !playerMovement.isActiveAndEnabled || viewCamera == null || Cursor.lockState != CursorLockMode.Locked || inventory.GetItem(drinkingSlot) != drinkingItem)
+            {
+                CancelDrinking();
+                return;
+            }
+            drinkElapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(drinkElapsed / Mathf.Max(0.2f, drinkDuration));
+            float lift = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(progress / 0.3f));
+            float lower = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((1f - progress) / 0.3f));
+            drinkPose = Mathf.Min(lift, lower);
+            if (firstPersonHands != null) firstPersonHands.SetDrinkingPose(drinkPose);
+            if (heldVisual != null) UpdateWaterPose();
+            if (progress < 1f) return;
+            var consumed = inventory.Remove(drinkingSlot);
+            CancelDrinking();
+            if (consumed == null) return;
+            Destroy(consumed.gameObject);
+            playerMovement.RestoreStamina();
+            Notify("Bebiste agua: estamina recuperada");
+        }
+        private void CancelDrinking()
+        {
+            drinkingItem = null;
+            drinkPose = 0f;
+            if (firstPersonHands != null) firstPersonHands.SetDrinkingPose(0f);
         }
         private void CreatePrompt()
         {

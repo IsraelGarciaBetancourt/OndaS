@@ -35,6 +35,8 @@ public static class OndaSItemSetup
                 serialized.FindProperty("category").enumValueIndex = entry.category == "Good Items" ? 0 : 1;
                 serialized.FindProperty("weightKg").floatValue = Weight(entry.name);
                 serialized.FindProperty("worldPrefab").objectReferenceValue = prefab;
+                serialized.FindProperty("isFlashlight").boolValue = entry.name == "Linterna";
+                serialized.FindProperty("restoresStamina").boolValue = entry.name == "Agua";
                 serialized.ApplyModifiedPropertiesWithoutUndo();
                 AssetDatabase.CreateAsset(definition, definitionPath);
             }

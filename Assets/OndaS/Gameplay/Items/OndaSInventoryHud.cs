@@ -55,6 +55,7 @@ namespace OndaS.Gameplay.Items
                 Sprite icon = item != null && item.Item != null ? item.Item.Icon : bag != null ? bag.Icon : null;
                 icons[i].sprite = icon; icons[i].enabled = icon != null;
                 var name = i == 2 ? (bag != null ? "MOCHILA" : "SIN MOCHILA") : item != null && item.Item != null ? item.Item.DisplayName : "VACÍO";
+                if (i == selected && item != null && item.Item != null && item.Item.RestoresStamina) name += "\nCLIC: BEBER";
                 labels[i].text = (i + 1) + "  " + name;
                 frames[i].color = i == selected ? new Color(0.35f, 0.29f, 0.12f, 0.8f) : new Color(0.10f, 0.10f, 0.08f, 0.55f);
             }
