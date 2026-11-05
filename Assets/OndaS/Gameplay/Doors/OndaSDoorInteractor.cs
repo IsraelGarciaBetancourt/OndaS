@@ -111,6 +111,16 @@ namespace OndaS.Gameplay
                 }
                 return;
             }
+            // Slot selection remains available while crouching or sheltered, even
+            // when a nearby interaction supplies the current prompt.
+            if (keyboard != null)
+            {
+                int old = inventoryHud.Selected;
+                if (keyboard.digit1Key.wasPressedThisFrame) inventoryHud.Select(0);
+                if (keyboard.digit2Key.wasPressedThisFrame) inventoryHud.Select(1);
+                if (keyboard.digit3Key.wasPressedThisFrame) inventoryHud.Select(2);
+                if (old != inventoryHud.Selected) RefreshHeld();
+            }
             if (shelter != null && shelter.Update(keyboard, out var shelterPrompt))
             { ShowPrompt(shelterPrompt); return; }
             if (holdingWater && playerMovement != null && playerMovement.enabled && mouse != null && mouse.leftButton.wasPressedThisFrame)
@@ -143,11 +153,6 @@ namespace OndaS.Gameplay
             }
             if (keyboard != null)
             {
-                int old = inventoryHud.Selected;
-                if (keyboard.digit1Key.wasPressedThisFrame) inventoryHud.Select(0);
-                if (keyboard.digit2Key.wasPressedThisFrame) inventoryHud.Select(1);
-                if (keyboard.digit3Key.wasPressedThisFrame) inventoryHud.Select(2);
-                if (old != inventoryHud.Selected) RefreshHeld();
                 if (keyboard.qKey.wasPressedThisFrame) { DropSelected(); ShowPrompt(null); return; }
             }
             if (bag != null && !bag.IsEquipped)
