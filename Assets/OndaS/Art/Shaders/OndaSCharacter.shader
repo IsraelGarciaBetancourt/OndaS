@@ -1,6 +1,6 @@
 Shader "OndaS/Character Vertex Color"
 {
-    Properties { _BaseMap ("Atlas", 2D) = "white" {} _BaseColor ("Color", Color) = (1,1,1,1) }
+    Properties { _BaseMap ("Atlas", 2D) = "white" {} _BaseColor ("Color", Color) = (1,1,1,1) _MinimumLight ("Minimum Light", Range(0,1)) = 0 }
     SubShader
     {
         Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Opaque" "Queue"="Geometry" }
@@ -21,6 +21,7 @@ Shader "OndaS/Character Vertex Color"
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseMap_ST;
                 half4 _BaseColor;
+                half _MinimumLight;
             CBUFFER_END
             struct Attributes { float4 positionOS : POSITION; float3 normalOS : NORMAL; float2 uv : TEXCOORD0; half4 color : COLOR; };
             struct Varyings { float4 positionCS : SV_POSITION; float3 positionWS : TEXCOORD0; half3 normalWS : TEXCOORD1; float2 uv : TEXCOORD2; half4 color : COLOR; };
@@ -44,6 +45,7 @@ Shader "OndaS/Character Vertex Color"
                     Light additionalLight = GetAdditionalLight(i, input.positionWS);
                     illumination += additionalLight.color * saturate(dot(normal, additionalLight.direction)) * additionalLight.distanceAttenuation * additionalLight.shadowAttenuation;
                 }
+                illumination = max(illumination, _MinimumLight);
                 half4 base = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv) * input.color * _BaseColor;
                 return half4(base.rgb * illumination, base.a);
             }

@@ -20,6 +20,10 @@ namespace OndaS.Visual
         [SerializeField, Range(0.4f, 0.95f)] private float crouchHeightRatio = 0.6f;
         [SerializeField, Min(0.1f)] private float postureSpeed = 4f;
         [SerializeField] private float mouseSensitivity = 0.10f;
+        [Header("Sprint camera shake")]
+        [SerializeField, Min(0f)] private float sprintShakeFrequency = 12f;
+        [SerializeField, Min(0f)] private float sprintShakeDegrees = 1.5f;
+        [SerializeField, Min(0.1f)] private float sprintShakeTransition = 5f;
         [Header("Stamina")]
         [SerializeField, Min(1f)] private float maxStamina = 100f;
         [SerializeField, Min(0.01f)] private float sprintDrainPerSecond = 20f;
@@ -35,6 +39,8 @@ namespace OndaS.Visual
         private OndaSRetroCamera retroCamera;
         private float verticalSpeed;
         private float pitch;
+        private float sprintShakePhase, sprintShakeWeight;
+        private Quaternion appliedSprintShake = Quaternion.identity;
         private bool blackout;
         private bool seismicBlackout, nightApplied;
         private AmbientMode ambientMode;
@@ -117,6 +123,7 @@ namespace OndaS.Visual
 
         private void Update()
         {
+            RemoveSprintShake();
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             if (keyboard == null)
@@ -155,6 +162,31 @@ namespace OndaS.Visual
             controller.Move(((transform.right * input.x + transform.forward * input.y) * moveSpeed + Vector3.up * verticalSpeed) * Time.deltaTime);
             if (keyboard.bKey.wasPressedThisFrame && !seismicBlackout) SetBlackout(!blackout);
             if (keyboard.fKey.wasPressedThisFrame) ToggleFlashlight();
+        }
+
+        private void LateUpdate()
+        {
+            if (viewCamera == null || controller == null) return;
+            Vector3 velocity = controller.velocity;
+            bool running = IsSprinting && new Vector2(velocity.x, velocity.z).sqrMagnitude > 0.25f;
+            sprintShakeWeight = Mathf.MoveTowards(sprintShakeWeight, running ? 1f : 0f, sprintShakeTransition * Time.deltaTime);
+            if (sprintShakeWeight <= 0f) return;
+
+            sprintShakePhase += Time.deltaTime * sprintShakeFrequency;
+            float stride = Mathf.Sin(sprintShakePhase);
+            float impact = Mathf.Sin(sprintShakePhase * 2f + 0.7f);
+            float uneven = (Mathf.PerlinNoise(sprintShakePhase * 0.35f, 2.3f) - 0.5f) * 0.6f;
+            appliedSprintShake = Quaternion.Euler(
+                (impact * 0.65f + uneven) * sprintShakeDegrees * sprintShakeWeight,
+                (stride * 0.35f + uneven) * sprintShakeDegrees * sprintShakeWeight,
+                stride * sprintShakeDegrees * sprintShakeWeight);
+            viewCamera.transform.localRotation *= appliedSprintShake;
+        }
+
+        private void RemoveSprintShake()
+        {
+            if (viewCamera != null) viewCamera.transform.localRotation *= Quaternion.Inverse(appliedSprintShake);
+            appliedSprintShake = Quaternion.identity;
         }
 
         public void ToggleFlashlight() { if (torch != null) torch.enabled = !torch.enabled; }
@@ -481,6 +513,8 @@ namespace OndaS.Visual
 
         private void OnDisable()
         {
+            RemoveSprintShake();
+            sprintShakeWeight = 0f;
             IsSprinting = false;
             if (staminaHud != null) staminaHud.gameObject.SetActive(false);
         }
