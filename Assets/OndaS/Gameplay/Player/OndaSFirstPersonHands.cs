@@ -17,10 +17,15 @@ namespace OndaS.Gameplay
         private Quaternion leftRotation, rightRotation;
         private float phase, leftLift, rightLift;
         private Renderer leftRenderer, rightRenderer;
+        private bool holdingItem;
+        private float drinkingPose;
         private OndaSLookDevWalkthrough lighting;
         private MaterialPropertyBlock lightingProperties;
         private float normalMinimumLight, currentMinimumLight;
         private static readonly int MinimumLightId = Shader.PropertyToID("_MinimumLight");
+
+        public void SetHoldingItem(bool holding) { holdingItem = holding; }
+        public void SetDrinkingPose(float amount) { drinkingPose = Mathf.Clamp01(amount); }
 
         private void Awake()
         {
@@ -63,7 +68,13 @@ namespace OndaS.Gameplay
             leftLift = Mathf.MoveTowards(leftLift, leftTarget, transitionSpeed * Time.deltaTime);
             rightLift = Mathf.MoveTowards(rightLift, rightTarget, transitionSpeed * Time.deltaTime);
             UpdateArm(leftArm, leftRenderer, leftRest, leftRotation, leftLift);
-            UpdateArm(rightArm, rightRenderer, rightRest, rightRotation, rightLift);
+            if (holdingItem)
+            {
+                rightArm.localPosition = rightRest + new Vector3(-0.10f, 0.08f, -0.16f) * drinkingPose;
+                rightArm.localRotation = Quaternion.Euler(-12f * drinkingPose, 0f, -8f * drinkingPose) * rightRotation;
+                if (rightRenderer != null) rightRenderer.enabled = true;
+            }
+            else UpdateArm(rightArm, rightRenderer, rightRest, rightRotation, rightLift);
             if (!moving && leftLift == 0f && rightLift == 0f) phase = 0f;
         }
 

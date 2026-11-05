@@ -32,6 +32,7 @@ namespace OndaS.Visual
         [SerializeField, Range(0.01f, 1f)] private float exhaustedRecoveryFraction = 0.25f;
         private CharacterController controller;
         private Light torch;
+        private bool flashlightEquipped;
         private Light nightFill;
         private Light[] sceneLights;
         private bool[] lightStates;
@@ -65,6 +66,7 @@ namespace OndaS.Visual
         private OndaSShelterPoint shelterPoint;
         private float stamina;
         private float recoveryWait;
+        private float staminaProtectedUntil;
         private bool exhausted;
         private bool mustReleaseSprint;
         private OndaSStaminaHud staminaHud;
@@ -189,7 +191,26 @@ namespace OndaS.Visual
             appliedSprintShake = Quaternion.identity;
         }
 
-        public void ToggleFlashlight() { if (torch != null) torch.enabled = !torch.enabled; }
+        public void SetFlashlightEquipped(bool equipped)
+        {
+            flashlightEquipped = equipped;
+            if (!equipped && torch != null) torch.enabled = false;
+        }
+
+        public void ToggleFlashlight()
+        {
+            if (flashlightEquipped && torch != null) torch.enabled = !torch.enabled;
+        }
+
+        public bool RestoreStamina()
+        {
+            stamina = maxStamina;
+            recoveryWait = 0f;
+            exhausted = false;
+            mustReleaseSprint = false;
+            staminaProtectedUntil = Time.time + 1.5f;
+            return true;
+        }
 
         public void ToggleBlackoutPreview() { if (!seismicBlackout) SetBlackout(!blackout); }
 
@@ -377,7 +398,8 @@ namespace OndaS.Visual
             IsSprinting = wantsSprint && !exhausted && stamina > 0f;
             if (IsSprinting)
             {
-                stamina = Mathf.Max(0f, stamina - sprintDrainPerSecond * deltaTime);
+                float unprotectedTime = Mathf.Clamp(Time.time - staminaProtectedUntil, 0f, deltaTime);
+                stamina = Mathf.Max(0f, stamina - sprintDrainPerSecond * unprotectedTime);
                 recoveryWait = staminaRecoveryDelay;
                 if (stamina <= 0f)
                 {
