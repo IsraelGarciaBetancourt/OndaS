@@ -1,4 +1,5 @@
 using UnityEngine;
+using OndaS.Visual;
 
 namespace OndaS.Gameplay
 {
@@ -16,19 +17,42 @@ namespace OndaS.Gameplay
         private Quaternion leftRotation, rightRotation;
         private float phase, leftLift, rightLift;
         private Renderer leftRenderer, rightRenderer;
+        private OndaSLookDevWalkthrough lighting;
+        private MaterialPropertyBlock lightingProperties;
+        private float normalMinimumLight, currentMinimumLight;
+        private static readonly int MinimumLightId = Shader.PropertyToID("_MinimumLight");
 
         private void Awake()
         {
             if (controller == null) controller = GetComponentInParent<CharacterController>();
             if (leftArm != null) { leftRest = leftArm.localPosition; leftRotation = leftArm.localRotation; leftRenderer = leftArm.GetComponent<Renderer>(); }
             if (rightArm != null) { rightRest = rightArm.localPosition; rightRotation = rightArm.localRotation; rightRenderer = rightArm.GetComponent<Renderer>(); }
+            lighting = GetComponentInParent<OndaSLookDevWalkthrough>();
+            lightingProperties = new MaterialPropertyBlock();
+            var material = leftRenderer != null ? leftRenderer.sharedMaterial : rightRenderer != null ? rightRenderer.sharedMaterial : null;
+            normalMinimumLight = material != null && material.HasProperty(MinimumLightId) ? material.GetFloat(MinimumLightId) : 0f;
+            currentMinimumLight = normalMinimumLight;
             UpdateArm(leftArm, leftRenderer, leftRest, leftRotation, 0f);
             UpdateArm(rightArm, rightRenderer, rightRest, rightRotation, 0f);
         }
 
         private void LateUpdate()
         {
+            float targetLight = lighting != null && lighting.IsBlackout ? 0.02f : normalMinimumLight;
+            currentMinimumLight = Mathf.MoveTowards(currentMinimumLight, targetLight, Time.deltaTime);
+            SetMinimumLight(leftRenderer, currentMinimumLight);
+            SetMinimumLight(rightRenderer, currentMinimumLight);
             if (controller == null || leftArm == null || rightArm == null) return;
+            // Inspection disables player movement, leaving CharacterController.velocity
+            // at its last value until the next Move call. Hide the walking arms while
+            // movement is disabled instead of animating from that stale velocity.
+            if (!controller.enabled || !controller.gameObject.activeInHierarchy || (lighting != null && !lighting.isActiveAndEnabled))
+            {
+                phase = leftLift = rightLift = 0f;
+                UpdateArm(leftArm, leftRenderer, leftRest, leftRotation, 0f);
+                UpdateArm(rightArm, rightRenderer, rightRest, rightRotation, 0f);
+                return;
+            }
             Vector3 v = controller.velocity;
             float speed = new Vector2(v.x, v.z).magnitude;
             bool moving = speed > 0.2f;
@@ -41,6 +65,14 @@ namespace OndaS.Gameplay
             UpdateArm(leftArm, leftRenderer, leftRest, leftRotation, leftLift);
             UpdateArm(rightArm, rightRenderer, rightRest, rightRotation, rightLift);
             if (!moving && leftLift == 0f && rightLift == 0f) phase = 0f;
+        }
+
+        private void SetMinimumLight(Renderer armRenderer, float minimumLight)
+        {
+            if (armRenderer == null) return;
+            armRenderer.GetPropertyBlock(lightingProperties);
+            lightingProperties.SetFloat(MinimumLightId, minimumLight);
+            armRenderer.SetPropertyBlock(lightingProperties);
         }
 
         private void UpdateArm(Transform arm, Renderer armRenderer, Vector3 rest, Quaternion rotation, float lift)

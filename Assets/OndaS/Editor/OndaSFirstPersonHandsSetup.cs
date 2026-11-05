@@ -22,7 +22,7 @@ public static class OndaSFirstPersonHandsSetup
         var player = GameObject.Find("Base Scene/First Person Player");
         var character = player != null ? player.transform.Find("Office Worker") : null;
         var camera = player != null ? player.GetComponentInChildren<Camera>(true) : null;
-        var material = AssetDatabase.LoadAssetAtPath<Material>(Root + "/OfficeWorker.mat");
+        var material = AssetDatabase.LoadAssetAtPath<Material>(Root + "/FirstPersonHands.mat");
         if (character == null || camera == null || material == null) { Debug.LogError("No se encontró el jugador, la cámara o el material del personaje."); return; }
         var importer = AssetImporter.GetAtPath(Model) as ModelImporter;
         if (importer == null) { Debug.LogError("No se encontró el FBX del personaje."); return; }
