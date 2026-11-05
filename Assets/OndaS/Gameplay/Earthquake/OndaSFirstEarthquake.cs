@@ -19,6 +19,11 @@ namespace OndaS.Gameplay.Earthquake
         [SerializeField] private float roomShakeDegrees = 4f;
         [SerializeField] private int brokenWindowPanels = 2;
         [SerializeField, Range(0.1f, 0.9f)] private float blackoutMoment = 0.5f;
+        [Header("Propagación del incendio")]
+        [Tooltip("Velocidad del frente de fuego y humo en metros por segundo. Un valor mayor hace que avance más rápido.")]
+        [SerializeField, Min(0.05f)] private float velocidadIncendio = 0.7f;
+        [Tooltip("Segundos que tarda el fuego en recorrer cada uno de los cuatro tramos de una escalera. Un valor menor acelera la bajada.")]
+        [SerializeField, Min(0.1f)] private float segundosPorTramoEscalera = 4f;
         [Header("Supervivencia")]
         [SerializeField, Min(0.1f)] private float initialShelterSeconds = 8f;
         [SerializeField, Min(0.1f)] private float returnToShelterSeconds = 3f;
@@ -64,11 +69,15 @@ namespace OndaS.Gameplay.Earthquake
         private float elapsed, shakeElapsed, intensity;
         private bool started, finished;
         private bool powerCut;
+        private bool gasChecked;
+        private OndaSGasFireHazard gasFire;
         private bool defeated, hasSheltered;
         private float exposedSeconds;
         private OndaS.Visual.OndaSLookDevWalkthrough playerMovement;
         private int brokenCount;
         public bool HasFinished => finished && !defeated;
+        public float VelocidadIncendio => Mathf.Max(0.05f, velocidadIncendio);
+        public float SegundosPorTramoEscalera => Mathf.Max(0.1f, segundosPorTramoEscalera);
 
         private void Awake()
         {
@@ -215,6 +224,16 @@ namespace OndaS.Gameplay.Earthquake
             if (rumble != null) rumble.volume = PlayerOnFloor() ? intensity * 0.55f : 0f;
             AnimateProps();
             UpdateSeismicPower();
+            if (!gasChecked && shakeElapsed >= Mathf.Max(0f, duration - 5f))
+            {
+                gasChecked = true;
+                var valve = FindFirstObjectByType<OndaS.Gameplay.Gas.OndaSGasValve>();
+                if (valve != null && !valve.IsClosed)
+                {
+                    gasFire = gameObject.AddComponent<OndaSGasFireHazard>();
+                    gasFire.Begin(valve, playerMovement, player.GetComponent<OndaS.Gameplay.OndaSDoorInteractor>(), cameraTransform.GetComponent<Camera>());
+                }
+            }
             while (brokenCount < Mathf.Min(brokenWindowPanels, glassPanels.Count) && shakeElapsed >= 11f + brokenCount * 6f)
             {
                 BreakGlass(glassPanels[brokenCount]);
@@ -267,6 +286,7 @@ namespace OndaS.Gameplay.Earthquake
         private void Defeat()
         {
             if (defeated) return;
+            if (gasFire != null) gasFire.CancelCutscene(false);
             defeated = true;
             finished = true;
             intensity = 0f;
