@@ -85,7 +85,7 @@ namespace OndaS.Gameplay
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             var ray = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
-            bool hitSomething = Physics.Raycast(ray, out var hit, interactionDistance, interactionLayers, QueryTriggerInteraction.Ignore);
+            bool hitSomething = TryFindInteraction(ray, out var hit);
             var bag = hitSomething ? hit.collider.GetComponentInParent<OndaSBackpack>() : null;
             if (radial.Active)
             {
@@ -178,6 +178,23 @@ namespace OndaS.Gameplay
             var door = hitSomething ? hit.collider.GetComponentInParent<OndaSDoor>() : null;
             if (door != null && keyboard != null && keyboard.eKey.wasPressedThisFrame) door.Toggle();
             ShowPrompt(door != null && door.CanInteract ? (door.IsOpen ? "[E] Cerrar puerta" : "[E] Abrir puerta") : null);
+        }
+        private bool TryFindInteraction(Ray ray, out RaycastHit closest)
+        {
+            closest = default;
+            float distance = float.PositiveInfinity;
+            bool found = false;
+            foreach (var hit in Physics.RaycastAll(ray, interactionDistance, interactionLayers, QueryTriggerInteraction.Collide))
+            {
+                var collider = hit.collider;
+                if (collider == null || collider.transform.IsChildOf(transform) || hit.distance >= distance) continue;
+                if (collider.isTrigger && collider.GetComponentInParent<OndaSBackpack>() == null &&
+                    collider.GetComponentInParent<OndaSCollectible>() == null) continue;
+                closest = hit;
+                distance = hit.distance;
+                found = true;
+            }
+            return found;
         }
         private void CancelRadial() { if (radial != null && radial.Active) radial.Close(); focusedBag = null; }
         private void OnDisable() { CancelDrinking(); if (inspectedFuseBox != null) inspectedFuseBox.InterruptInspection(); if (inspectedGasValve != null) inspectedGasValve.InterruptInspection(); inspectedFuseBox = null; inspectedGasValve = null; CancelRadial(); if (playerMovement != null) playerMovement.SetFlashlightEquipped(false); if (firstPersonHands != null) firstPersonHands.SetHoldingItem(false); if (heldVisual != null) heldVisual.SetActive(false); if (promptCanvas != null) promptCanvas.SetActive(false); if (inventoryHud != null) inventoryHud.gameObject.SetActive(false); }

@@ -8,6 +8,13 @@ namespace OndaS.Gameplay.Items
         private Vector3 worldScale;
         private bool cachedScale;
         public OndaSItemDefinition Item => item;
+
+        private void OnEnable()
+        {
+            foreach (var collider in GetComponentsInChildren<Collider>(true))
+                collider.isTrigger = true;
+        }
+
         public void Store(Transform parent)
         {
             if (!cachedScale) { worldScale = transform.lossyScale; cachedScale = true; }

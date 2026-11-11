@@ -30,7 +30,7 @@ namespace OndaS.Gameplay
             get
             {
                 var owner = StateOwner;
-                return owner.doorAnimator != null && owner.doorAnimator.isActiveAndEnabled && Time.time >= owner.availableAt;
+                return owner.GetComponent<OndaSDoorLock>() == null && owner.doorAnimator != null && owner.doorAnimator.isActiveAndEnabled && Time.time >= owner.availableAt;
             }
         }
 

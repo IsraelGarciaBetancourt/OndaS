@@ -28,6 +28,12 @@ namespace OndaS.Gameplay.Items
             rendererStates = new bool[renderers.Length];
             originalScale = transform.lossyScale;
         }
+        private void OnEnable()
+        {
+            foreach (var c in colliders) if (c != null) c.isTrigger = true;
+            body.isKinematic = true;
+            body.useGravity = false;
+        }
         public void Equip(Transform player)
         {
             IsEquipped = true;
@@ -51,13 +57,18 @@ namespace OndaS.Gameplay.Items
             transform.SetPositionAndRotation(position, Quaternion.identity);
             transform.localScale = originalScale;
             IsEquipped = false;
-            foreach (var c in colliders) if (c != null) c.enabled = true;
+            foreach (var c in colliders) if (c != null) { c.isTrigger = true; c.enabled = true; }
             for (int i = 0; i < renderers.Length; i++)
                 if (renderers[i] != null) renderers[i].enabled = rendererStates[i];
-            body.isKinematic = false;
-            body.useGravity = true;
-            body.linearVelocity = Vector3.zero;
-            body.angularVelocity = Vector3.zero;
+            body.isKinematic = true;
+            body.useGravity = false;
+            Physics.SyncTransforms();
+            float lowest = float.PositiveInfinity;
+            foreach (var c in colliders)
+                if (c != null && c.enabled && c.gameObject.activeInHierarchy)
+                    lowest = Mathf.Min(lowest, c.bounds.min.y);
+            if (!float.IsPositiveInfinity(lowest))
+                transform.position += Vector3.up * (position.y - lowest);
         }
     }
 }
