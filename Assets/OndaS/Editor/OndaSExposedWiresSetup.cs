@@ -109,6 +109,71 @@ public static class OndaSExposedWiresSetup
         Debug.Log("OndaS: cables eléctricos del piso 5 colocados.", obj);
     }
 
+    [MenuItem("OndaS/Crear más cables pisos 5 y 2")]
+    public static void CreateMore()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity" || EditorApplication.isPlaying)
+        { Debug.LogError("Abre OndaS_RetroEdificio y sal de Play antes de colocar los cables."); return; }
+        var root = GameObject.Find("Structure_03/Interior/OndaS - Derrumbes pisos 8 y 7");
+        var damage = root != null ? root.transform.Find("Daños visibles tras el sismo") : null;
+        var original = damage != null ? damage.Find(HazardName) : null;
+        string[] names = {
+            "Piso 5 - cables laterales A", "Piso 5 - cables laterales B",
+            "Piso 2 - cables altos", "Piso 2 - cables laterales A", "Piso 2 - cables laterales B"
+        };
+        if (original == null || original.GetComponent<OndaSExposedWires>() == null)
+        { Debug.LogError("Falta el primer grupo de cables del piso 5."); return; }
+        foreach (var name in names)
+            if (damage.Find(name) != null) { Debug.LogError("Los cables adicionales ya existen: " + name); return; }
+
+        CreateVariant(original, damage, names[0], new Vector3(11.9f, 16.1f, 3.7f), true);
+        CreateVariant(original, damage, names[1], new Vector3(11.9f, 16.1f, -9.5f), true);
+        CreateVariant(original, damage, names[2], new Vector3(12.5f, 4.1f, -11.4f), false);
+        CreateVariant(original, damage, names[3], new Vector3(11.9f, 4.1f, -3.5f), true);
+        CreateVariant(original, damage, names[4], new Vector3(13.1f, 4.1f, 5.2f), true);
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("OndaS: cables adicionales de los pisos 5 y 2 colocados.", root);
+    }
+
+    private static void CreateVariant(Transform original, Transform parent, string name, Vector3 position, bool side)
+    {
+        var obj = UnityEngine.Object.Instantiate(original.gameObject, parent);
+        obj.name = name;
+        obj.transform.position = position;
+        var audioSource = obj.GetComponent<AudioSource>();
+        if (audioSource != null) audioSource.volume = 0.12f;
+        if (!side) return;
+
+        // Keep the strands attached to the ceiling and lower their exposed ends.
+        var geometry = new GameObject("Cables laterales").transform;
+        geometry.SetParent(obj.transform, false);
+        for (int i = obj.transform.childCount - 1; i >= 0; i--)
+        {
+            var child = obj.transform.GetChild(i);
+            if (child.name == "Cable aislado" || child.name == "Cobre expuesto" || child.name == "Hebra de cobre")
+                child.SetParent(geometry, false);
+        }
+        geometry.localScale = new Vector3(0.52f, 1.75f, 1f);
+        geometry.localPosition = new Vector3(0f, -2.2875f, 0f);
+
+        var trigger = obj.GetComponent<BoxCollider>();
+        trigger.center = new Vector3(0f, 1.55f, 0f);
+        trigger.size = new Vector3(1.35f, 3.1f, 1.5f);
+        var overhead = obj.transform.Find("Colisión alta de los cables");
+        overhead.name = "Colisión lateral de los cables";
+        var sideBox = overhead.GetComponent<BoxCollider>();
+        sideBox.center = new Vector3(0f, 1.5f, 0f);
+        sideBox.size = new Vector3(1.25f, 3f, 0.2f);
+        var particles = obj.GetComponentInChildren<ParticleSystem>(true);
+        particles.transform.localPosition = new Vector3(0f, 0.48f, 0f);
+        var shape = particles.shape;
+        shape.scale = new Vector3(1.1f, 0.08f, 0.15f);
+        var light = obj.GetComponentInChildren<Light>(true);
+        light.transform.localPosition = new Vector3(0f, 0.58f, 0f);
+    }
+
     private static Material MakeMaterial(Material source, string name, Color color)
     {
         string path = AssetFolder + "/" + name + ".mat";
