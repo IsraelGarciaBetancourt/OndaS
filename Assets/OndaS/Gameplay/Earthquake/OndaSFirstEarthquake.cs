@@ -283,7 +283,12 @@ namespace OndaS.Gameplay.Earthquake
             if (remaining <= 0f) Defeat();
         }
 
-        private void Defeat()
+        public void DefeatByElectricalHazard()
+        {
+            if (HasFinished) Defeat("Tocaste cables eléctricos con corriente");
+        }
+
+        private void Defeat(string reason = "No encontraste refugio durante el sismo")
         {
             if (defeated) return;
             if (gasFire != null) gasFire.CancelCutscene(false);
@@ -310,9 +315,9 @@ namespace OndaS.Gameplay.Earthquake
             backgroundRect.offsetMin = backgroundRect.offsetMax = Vector2.zero;
             background.GetComponent<Image>().color = new Color(0.015f, 0.01f, 0.01f, 0.98f);
             CreateDefeatText("Título", "NO SOBREVIVISTE", new Vector2(0f, 80f), 72f, new Color32(220, 75, 55, 255));
-            CreateDefeatText("Motivo", "No encontraste refugio durante el sismo", new Vector2(0f, -15f), 32f, new Color32(230, 220, 200, 255));
+            CreateDefeatText("Motivo", reason, new Vector2(0f, -15f), 32f, new Color32(230, 220, 200, 255));
             CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -115f), 34f, new Color32(255, 218, 65, 255));
-            Debug.Log("OndaS: el jugador perdió por permanecer sin refugio durante el sismo.", this);
+            Debug.Log("OndaS: " + reason + ".", this);
         }
 
         private void CreateDefeatText(string name, string value, Vector2 position, float size, Color color)
