@@ -40,7 +40,7 @@ public static class OndaSEscapeAftermathSetup
         // Floor surfaces are at y=28.10 and y=24.10; corridors are 2.5 m wide.
         BlockedStairs(damage, "Piso 8 - escalera izquierda bloqueada", new Vector3(12.5f, 28.1f, -13.0f), false);
         BlockedStairs(damage, "Piso 7 - bajada derecha bloqueada", new Vector3(12.5f, 24.1f, 19.6f), true);
-        CrawlPassage(damage);
+        CrawlPassage(damage, "Piso 7 - viga caída para pasar agachado", new Vector3(12.5f, 24.1f, 7.5f));
         ScatteredPieces(damage, "Piso 8 - restos del pasadizo", 28.1f,
             new Vector3(11.45f, 0f, -4.5f), new Vector3(13.48f, 0f, 0.0f), new Vector3(11.48f, 0f, 8.0f), new Vector3(13.48f, 0f, 12.0f));
         ScatteredPieces(damage, "Piso 7 - restos del pasadizo", 24.1f,
@@ -69,7 +69,7 @@ public static class OndaSEscapeAftermathSetup
 
         BlockedStairs(damage, "Piso 6 - bajada izquierda bloqueada", new Vector3(12.5f, 20.1f, -17.1f), true);
         BlockedStairs(damage, "Piso 6 - pasadizo cortado", new Vector3(12.5f, 20.1f, 5.5f), false);
-        ApartmentBreach(damage);
+        ApartmentBreach(damage, "Piso 6 - abertura al pasadizo", new Vector3(11.25f, 20.1f, 10f));
         BlockedStairs(damage, "Piso 5 - bajada derecha bloqueada", new Vector3(12.5f, 16.1f, 19.6f), true);
         PartialRubble(damage, "Piso 5 - derrumbe junto a pared izquierda", new Vector3(11.85f, 16.1f, 1.0f), false);
         PartialRubble(damage, "Piso 5 - derrumbe junto a pared derecha", new Vector3(13.15f, 16.1f, -5.0f), true);
@@ -87,6 +87,126 @@ public static class OndaSEscapeAftermathSetup
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
         Debug.Log("OndaS: derrumbes y desvío por el departamento del piso 6 creados.", root);
+    }
+
+    [MenuItem("OndaS/Crear derrumbes pisos 4 y 3")]
+    public static void ExtendLowerFloors()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity" || EditorApplication.isPlaying)
+        { Debug.LogError("Abre OndaS_RetroEdificio y sal de Play antes de crear los derrumbes."); return; }
+        var root = GameObject.Find("Structure_03/Interior/" + RootName);
+        var controller = root != null ? root.GetComponent<OndaSEarthquakeAftermath>() : null;
+        var damage = root != null ? root.transform.Find("Daños visibles tras el sismo") : null;
+        var hallwayWall = GameObject.Find("Structure_03/Interior/4rd Floor/Hallways/Walls/Int_Apt_02_Wall_01 (5)");
+        var apartmentWall = GameObject.Find("Structure_03/Interior/4rd Floor/Apartment_02/Walls/Int_WB_01_Wall_01 (44)");
+        var lamp = GameObject.Find("Structure_03/Interior/4rd Floor/Apartment_02/Furniture and Props/Living Room/Props/Lamp_Floor_Apt_02 (1)");
+        if (controller == null || damage == null || hallwayWall == null || apartmentWall == null || lamp == null ||
+            damage.Find("Piso 4 - bajada izquierda bloqueada") != null)
+        { Debug.LogError("Faltan los derrumbes anteriores o las paredes del piso 4, o el tramo ya existe."); return; }
+        PrepareAssets();
+        if (concrete == null || metal == null) { Debug.LogError("No se encontraron los materiales de los derrumbes."); return; }
+
+        BlockedStairs(damage, "Piso 4 - bajada izquierda bloqueada", new Vector3(12.5f, 12.1f, -17.1f), true);
+        BlockedStairs(damage, "Piso 4 - pasadizo cortado", new Vector3(12.5f, 12.1f, 9.5f), false);
+        ApartmentBreach(damage, "Piso 4 - abertura al pasadizo", new Vector3(13.75f, 12.1f, 12.5f));
+        BuriedLamp(damage);
+        BlockedStairs(damage, "Piso 3 - bajada derecha bloqueada", new Vector3(12.5f, 8.1f, 19.6f), true);
+        CrawlPassage(damage, "Piso 3 - viga caída para pasar agachado", new Vector3(12.5f, 8.1f, -5f));
+        PartialRubble(damage, "Piso 3 - derrumbe junto a pared izquierda", new Vector3(11.85f, 8.1f, 6f), false);
+        PartialRubble(damage, "Piso 3 - derrumbe junto a pared derecha", new Vector3(13.15f, 8.1f, -10f), true);
+        ScatteredPieces(damage, "Piso 4 - restos del pasadizo", 12.1f,
+            new Vector3(11.47f, 0f, -11f), new Vector3(13.48f, 0f, -5f), new Vector3(11.48f, 0f, 3f));
+        ScatteredPieces(damage, "Piso 3 - restos del pasadizo", 8.1f,
+            new Vector3(11.48f, 0f, 12f), new Vector3(13.48f, 0f, 3f), new Vector3(11.48f, 0f, -12f));
+        AddSuspendedDust(damage, new Vector3(12.5f, 9.5f, -5f));
+
+        var serialized = new SerializedObject(controller);
+        var removed = serialized.FindProperty("removeAfterEarthquake");
+        int previous = removed.arraySize;
+        removed.arraySize = previous + 3;
+        removed.GetArrayElementAtIndex(previous).objectReferenceValue = hallwayWall;
+        removed.GetArrayElementAtIndex(previous + 1).objectReferenceValue = apartmentWall;
+        removed.GetArrayElementAtIndex(previous + 2).objectReferenceValue = lamp;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("OndaS: derrumbes y desvío de los pisos 4 y 3 creados.", root);
+    }
+
+    [MenuItem("OndaS/Ajustar acceso derrumbado piso 4")]
+    public static void FinishFloor4Access()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity" || EditorApplication.isPlaying)
+        { Debug.LogError("Abre OndaS_RetroEdificio y sal de Play antes de ajustar el acceso."); return; }
+        var root = GameObject.Find("Structure_03/Interior/" + RootName);
+        var controller = root != null ? root.GetComponent<OndaSEarthquakeAftermath>() : null;
+        var damage = root != null ? root.transform.Find("Daños visibles tras el sismo") : null;
+        var lamp = GameObject.Find("Structure_03/Interior/4rd Floor/Apartment_02/Furniture and Props/Living Room/Props/Lamp_Floor_Apt_02 (1)");
+        if (controller == null || damage == null || lamp == null || damage.Find("Piso 4 - restos de lámpara") != null)
+        { Debug.LogError("Falta el acceso del piso 4 o ya se ajustó."); return; }
+        PrepareAssets();
+        if (concrete == null || metal == null) { Debug.LogError("No se encontraron los materiales de los derrumbes."); return; }
+        var serialized = new SerializedObject(controller);
+        var removed = serialized.FindProperty("removeAfterEarthquake");
+        for (int i = 0; i < removed.arraySize; i++)
+            if (removed.GetArrayElementAtIndex(i).objectReferenceValue == lamp)
+            { Debug.LogError("La lámpara ya está configurada."); return; }
+        int previous = removed.arraySize; removed.arraySize = previous + 1;
+        removed.GetArrayElementAtIndex(previous).objectReferenceValue = lamp;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        BuriedLamp(damage);
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("OndaS: acceso del piso 4 despejado tras el sismo.", root);
+    }
+
+    [MenuItem("OndaS/Crear derrumbes piso 2 y lobby")]
+    public static void ExtendToLobby()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity" || EditorApplication.isPlaying)
+        { Debug.LogError("Abre OndaS_RetroEdificio y sal de Play antes de crear los derrumbes."); return; }
+        var root = GameObject.Find("Structure_03/Interior/" + RootName);
+        var controller = root != null ? root.GetComponent<OndaSEarthquakeAftermath>() : null;
+        var damage = root != null ? root.transform.Find("Daños visibles tras el sismo") : null;
+        if (controller == null || damage == null || damage.Find("Piso 2 - bajada izquierda bloqueada") != null)
+        { Debug.LogError("Faltan los derrumbes anteriores o el tramo ya existe."); return; }
+        PrepareAssets();
+        if (concrete == null || metal == null) { Debug.LogError("No se encontraron los materiales de los derrumbes."); return; }
+
+        BlockedStairs(damage, "Piso 2 - bajada izquierda bloqueada", new Vector3(12.5f, 4.1f, -17.1f), true);
+        PartialRubble(damage, "Piso 2 - derrumbe junto a pared derecha", new Vector3(13.15f, 4.1f, -7.5f), true);
+        PartialRubble(damage, "Piso 2 - derrumbe junto a pared izquierda", new Vector3(11.85f, 4.1f, 0f), false);
+        PartialRubble(damage, "Piso 2 - escombros antes de la escalera", new Vector3(13.15f, 4.1f, 10f), true);
+        ScatteredPieces(damage, "Piso 2 - restos del pasadizo", 4.1f,
+            new Vector3(11.48f, 0f, -12f), new Vector3(13.48f, 0f, -3f), new Vector3(11.48f, 0f, 5f), new Vector3(13.48f, 0f, 13f));
+        ScatteredPieces(damage, "Lobby - restos del techo", 0.1f,
+            new Vector3(8.8f, 0f, 14f), new Vector3(9f, 0f, 11.5f), new Vector3(14f, 0f, 7.5f), new Vector3(17f, 0f, 4f), new Vector3(20f, 0f, 1f));
+        PartialRubble(damage, "Lobby - losa caída junto a la pared", new Vector3(8.7f, 0.1f, 10.5f), false);
+        LobbyCollapse(damage);
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("OndaS: ruta del piso 2 al lobby creada.", root);
+    }
+
+    [MenuItem("OndaS/Completar daños del lobby")]
+    public static void FinishLobbyDamage()
+    {
+        var scene = SceneManager.GetActiveScene();
+        if (scene.path != "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity" || EditorApplication.isPlaying)
+        { Debug.LogError("Abre OndaS_RetroEdificio y sal de Play antes de ajustar el lobby."); return; }
+        var root = GameObject.Find("Structure_03/Interior/" + RootName);
+        var damage = root != null ? root.transform.Find("Daños visibles tras el sismo") : null;
+        if (damage == null || damage.Find("Lobby - losa central caída") != null)
+        { Debug.LogError("Falta la ruta del lobby o los daños ya existen."); return; }
+        PrepareAssets();
+        if (concrete == null || metal == null) { Debug.LogError("No se encontraron los materiales de los derrumbes."); return; }
+        LobbyCollapse(damage);
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log("OndaS: daños del lobby completados.", root);
     }
 
     private static void PrepareAssets()
@@ -200,10 +320,9 @@ public static class OndaSEscapeAftermathSetup
         Fragment(root, "Piedra suelta", p + new Vector3(0.64f, 0.11f, -0.75f), new Vector3(0.4f, 0.22f, 0.3f), new Vector3(0f, -15f, -5f), 1);
     }
 
-    private static void CrawlPassage(Transform parent)
+    private static void CrawlPassage(Transform parent, string name, Vector3 p)
     {
-        var root = Group(parent, "Piso 7 - viga caída para pasar agachado");
-        var p = new Vector3(12.5f, 24.1f, 7.5f);
+        var root = Group(parent, name);
         var raised = p + Vector3.up * 0.4f;
         // Allow for the CharacterController's step offset while still blocking standing movement.
         ColliderBox(root, "Colisión de la viga", raised + new Vector3(0f, 1.57f, 0f), new Vector3(2.6f, 0.5f, 0.9f));
@@ -216,10 +335,9 @@ public static class OndaSEscapeAftermathSetup
         Fragment(root, "Escombro junto a la pared", p + new Vector3(1.03f, 0.13f, 0.72f), new Vector3(0.35f, 0.26f, 0.35f), new Vector3(2f, -18f, 5f), 2);
     }
 
-    private static void ApartmentBreach(Transform parent)
+    private static void ApartmentBreach(Transform parent, string name, Vector3 p)
     {
-        var root = Group(parent, "Piso 6 - abertura al pasadizo");
-        var p = new Vector3(11.25f, 20.1f, 10f);
+        var root = Group(parent, name);
         // The two original wall sections disappear at the end of the quake.
         // Side colliders leave a clear opening through the damaged wall.
         for (int side = -1; side <= 1; side += 2)
@@ -234,12 +352,49 @@ public static class OndaSEscapeAftermathSetup
         Bar(root, p + new Vector3(-0.05f, 2.32f, 0.8f), new Vector3(0.035f, 0.65f, 0.035f), new Vector3(-12f, 0f, 18f));
     }
 
+    private static void AddSuspendedDust(Transform parent, Vector3 position)
+    {
+        var source = GameObject.Find("Structure_03/Interior/8th Floor/OndaS - Polvo ambiental");
+        if (source == null || source.GetComponent<ParticleSystem>() == null)
+        { Debug.LogWarning("No se encontró la plantilla de polvo para el piso 3."); return; }
+        var obj = UnityEngine.Object.Instantiate(source, parent);
+        obj.name = "Piso 3 - polvo suspendido";
+        obj.transform.position = position;
+        foreach (var light in obj.GetComponentsInChildren<Light>(true)) light.enabled = false;
+        var dust = obj.GetComponent<ParticleSystem>();
+        dust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        var main = dust.main;
+        main.playOnAwake = true; main.loop = true; main.simulationSpace = ParticleSystemSimulationSpace.Local;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(4f, 7f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(0.01f, 0.06f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.03f, 0.1f);
+        main.startColor = new Color(0.72f, 0.69f, 0.61f, 0.55f); main.maxParticles = 70;
+        var emission = dust.emission; emission.enabled = true; emission.rateOverTime = 10f;
+        var shape = dust.shape; shape.enabled = true; shape.shapeType = ParticleSystemShapeType.Box;
+        shape.scale = new Vector3(2.2f, 2f, 5f);
+    }
+
     private static void PartialRubble(Transform parent, string name, Vector3 p, bool right)
     {
         var root = Group(parent, name);
         ColliderBox(root, "Colisión de escombros", p + Vector3.up * 0.45f, new Vector3(1.25f, 0.9f, 0.95f));
         Fragment(root, "Losa caída", p + new Vector3(0f, 0.43f, 0f), new Vector3(1.2f, 0.85f, 0.95f), new Vector3(3f, right ? -8f : 8f, right ? -12f : 12f), 2);
         Fragment(root, "Trozo de pared", p + new Vector3(right ? 0.18f : -0.18f, 0.91f, 0.04f), new Vector3(0.8f, 0.3f, 0.72f), new Vector3(2f, 4f, right ? 10f : -10f), 3);
+    }
+
+    private static void BuriedLamp(Transform parent)
+    {
+        var root = Group(parent, "Piso 4 - restos de lámpara");
+        Fragment(root, "Escombro sobre la lámpara", new Vector3(14.4f, 12.18f, 12.7f), new Vector3(0.45f, 0.16f, 0.38f), new Vector3(0f, 18f, 5f), 2);
+        Bar(root, new Vector3(14.48f, 12.2f, 12.63f), new Vector3(0.035f, 0.75f, 0.035f), new Vector3(70f, 0f, 74f));
+    }
+
+    private static void LobbyCollapse(Transform parent)
+    {
+        PartialRubble(parent, "Lobby - losa central caída", new Vector3(20f, 0.1f, 4f), false);
+        PartialRubble(parent, "Lobby - fragmento de losa central", new Vector3(21.15f, 0.1f, 4.35f), true);
+        ScatteredPieces(parent, "Lobby - fragmentos del derrumbe", 0.1f,
+            new Vector3(19.15f, 0f, 3.3f), new Vector3(21.75f, 0f, 5.0f));
     }
 
     private static void ScatteredPieces(Transform parent, string name, float floor, params Vector3[] positions)
