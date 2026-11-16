@@ -1,5 +1,8 @@
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+using OndaS.Gameplay.Earthquake;
 
 public static class OndaSCloudDustSetup
 {
@@ -26,5 +29,30 @@ public static class OndaSCloudDustSetup
         material.shader = shader; material.SetTexture("_MainTex", texture); material.SetColor("_Color", Color.white);
         EditorUtility.SetDirty(material); AssetDatabase.SaveAssets();
         Debug.Log("OndaS: textura de polvo preparada.");
+    }
+
+    [MenuItem("OndaS/Aplicar polvo del sismo")]
+    public static void ApplyToScene()
+    {
+        var scene = SceneManager.GetActiveScene();
+        var material = AssetDatabase.LoadAssetAtPath<Material>(MaterialPath);
+        var quake = Object.FindAnyObjectByType<OndaSFirstEarthquake>();
+        if (EditorApplication.isPlaying || scene.path != "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity" || material == null || quake == null)
+        { Debug.LogError("Abre la escena principal y prepara primero el material de polvo."); return; }
+        var serialized = new SerializedObject(quake);
+        serialized.FindProperty("cloudDustMaterial").objectReferenceValue = material;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        foreach (var system in Object.FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (system.name != "Piso 3 - polvo suspendido") continue;
+            OndaSCloudDust.Configure(system, material);
+            var main = system.main; main.playOnAwake = true;
+            var shape = system.shape; shape.scale = new Vector3(2.2f, 2f, 5f);
+            var emission = system.emission; emission.rateOverTime = 1.4f;
+            EditorUtility.SetDirty(system);
+            EditorUtility.SetDirty(system.GetComponent<ParticleSystemRenderer>());
+        }
+        EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
+        Debug.Log("OndaS: polvo del sismo actualizado.");
     }
 }

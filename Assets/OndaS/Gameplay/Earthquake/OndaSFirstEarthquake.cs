@@ -28,6 +28,7 @@ namespace OndaS.Gameplay.Earthquake
         [SerializeField, Min(0.1f)] private float initialShelterSeconds = 8f;
         [SerializeField, Min(0.1f)] private float returnToShelterSeconds = 3f;
         [Header("Polvo del sismo")]
+        [SerializeField] private Material cloudDustMaterial;
         [SerializeField, Min(0f)] private float quakeFogDensity = 0.11f;
         [SerializeField, Range(0f, 1f)] private float settledDustFraction = 0.85f;
         [SerializeField] private Color dustFogColor = new Color(0.29f, 0.28f, 0.25f);
@@ -543,6 +544,7 @@ namespace OndaS.Gameplay.Earthquake
             var dust = Instantiate(dustTemplate, new Vector3(position.x, transform.position.y + 3f, position.z), Quaternion.identity, transform);
             dust.name = "OndaS - polvo de impacto";
             foreach (var light in dust.GetComponentsInChildren<Light>(true)) light.enabled = false;
+            OndaSCloudDust.Configure(dust, cloudDustMaterial, true);
             dust.Play();
             Destroy(dust.gameObject, 4f);
         }
@@ -553,23 +555,7 @@ namespace OndaS.Gameplay.Earthquake
             suspendedDust = Instantiate(dustTemplate, transform);
             suspendedDust.name = "OndaS - Polvo suspendido del sismo";
             foreach (var light in suspendedDust.GetComponentsInChildren<Light>(true)) light.enabled = false;
-            suspendedDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            var main = suspendedDust.main;
-            main.playOnAwake = false;
-            main.loop = true;
-            main.simulationSpace = ParticleSystemSimulationSpace.World;
-            main.startLifetime = new ParticleSystem.MinMaxCurve(5f, 9f);
-            main.startSpeed = new ParticleSystem.MinMaxCurve(0.02f, 0.12f);
-            main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.12f);
-            main.startColor = new Color(0.72f, 0.69f, 0.61f, 0.65f);
-            main.maxParticles = 180;
-            var emission = suspendedDust.emission;
-            emission.enabled = true;
-            emission.rateOverTime = 24f;
-            var shape = suspendedDust.shape;
-            shape.enabled = true;
-            shape.shapeType = ParticleSystemShapeType.Box;
-            shape.scale = new Vector3(9f, 2.4f, 9f);
+            OndaSCloudDust.Configure(suspendedDust, cloudDustMaterial);
             suspendedDust.Play();
         }
 
@@ -605,7 +591,7 @@ namespace OndaS.Gameplay.Earthquake
             {
                 suspendedDust.transform.position = new Vector3(player.position.x, transform.position.y + 1.5f, player.position.z);
                 var emission = suspendedDust.emission;
-                emission.rateOverTime = Mathf.Lerp(4f, 24f, dustFraction);
+                emission.rateOverTime = Mathf.Lerp(1f, 4f, dustFraction);
                 if (!suspendedDust.isPlaying) suspendedDust.Play();
             }
             else if (suspendedDust.isPlaying)
