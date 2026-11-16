@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using OndaS.Gameplay.Gas;
 using OndaS.Visual;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace OndaS.Gameplay.Earthquake
 {
@@ -13,6 +14,7 @@ namespace OndaS.Gameplay.Earthquake
     {
         private const int ApartmentSites = 18;
         private const int HallwaySites = 12;
+        private const float FireDeathSeconds = 2f;
         private OndaSGasValve valve;
         private OndaSFirstEarthquake earthquake;
         private OndaSLookDevWalkthrough movement;
@@ -36,6 +38,8 @@ namespace OndaS.Gameplay.Earthquake
         }
         private readonly List<FireSite> fireSites = new List<FireSite>();
         private CharacterController playerController;
+        private Image heatOverlay;
+        private float fireExposure, heatIntensity;
         private readonly List<Light> fireLights = new List<Light>();
         private readonly List<Transform> floors = new List<Transform>();
 
@@ -184,18 +188,48 @@ namespace OndaS.Gameplay.Earthquake
 
         private void CheckFireContact()
         {
-            if (inCutscene || movement == null || !movement.isActiveAndEnabled ||
-                playerController == null || !playerController.enabled || earthquake == null) return;
-            Bounds playerBounds = playerController.bounds;
-            foreach (var site in fireSites)
+            bool touchingFire = false;
+            if (!inCutscene && movement != null && movement.isActiveAndEnabled &&
+                playerController != null && playerController.enabled && earthquake != null)
             {
-                if (playerBounds.max.y < site.position.y || playerBounds.min.y > site.position.y + 2f) continue;
-                float x = Mathf.Max(playerBounds.min.x - site.position.x, 0f, site.position.x - playerBounds.max.x);
-                float z = Mathf.Max(playerBounds.min.z - site.position.z, 0f, site.position.z - playerBounds.max.z);
-                if (x * x + z * z > site.radius * site.radius) continue;
-                earthquake.DefeatByFire();
-                return;
+                Bounds playerBounds = playerController.bounds;
+                foreach (var site in fireSites)
+                {
+                    if (playerBounds.max.y < site.position.y || playerBounds.min.y > site.position.y + 2f) continue;
+                    float x = Mathf.Max(playerBounds.min.x - site.position.x, 0f, site.position.x - playerBounds.max.x);
+                    float z = Mathf.Max(playerBounds.min.z - site.position.z, 0f, site.position.z - playerBounds.max.z);
+                    if (x * x + z * z > site.radius * site.radius) continue;
+                    touchingFire = true;
+                    break;
+                }
             }
+
+            fireExposure = touchingFire ? fireExposure + Time.deltaTime : 0f;
+            float targetHeat = touchingFire ? Mathf.Clamp01(fireExposure / FireDeathSeconds) : 0f;
+            heatIntensity = touchingFire ? targetHeat : Mathf.MoveTowards(heatIntensity, 0f, Time.deltaTime * 1.5f);
+            UpdateHeatOverlay();
+            if (touchingFire && fireExposure >= FireDeathSeconds) earthquake.DefeatByFire();
+        }
+
+        private void UpdateHeatOverlay()
+        {
+            if (heatOverlay == null && heatIntensity > 0f)
+            {
+                var canvasObject = new GameObject("OndaS - Calor del fuego", typeof(RectTransform), typeof(Canvas));
+                canvasObject.transform.SetParent(effectsRoot.transform, false);
+                var canvas = canvasObject.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+                canvas.sortingOrder = 90;
+                var overlay = new GameObject("Calor", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                overlay.transform.SetParent(canvasObject.transform, false);
+                var rect = overlay.GetComponent<RectTransform>();
+                rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+                rect.offsetMin = rect.offsetMax = Vector2.zero;
+                heatOverlay = overlay.GetComponent<Image>();
+                heatOverlay.raycastTarget = false;
+            }
+            if (heatOverlay != null)
+                heatOverlay.color = new Color(0.8f, 0.12f, 0.015f, heatIntensity * 0.45f);
         }
 
         private IEnumerator SpreadFire()
