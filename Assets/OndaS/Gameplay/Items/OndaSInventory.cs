@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace OndaS.Gameplay.Items
@@ -8,6 +9,9 @@ namespace OndaS.Gameplay.Items
         public const int Capacity = 2;
         public const int BackpackSlot = 2;
         private readonly OndaSCollectible[] slots = new OndaSCollectible[Capacity];
+        private readonly HashSet<int> recordedItems = new HashSet<int>();
+        private readonly List<OndaSItemDefinition> collectedUsefulItems = new List<OndaSItemDefinition>();
+        public IReadOnlyList<OndaSItemDefinition> CollectedUsefulItems => collectedUsefulItems;
         public OndaSBackpack Backpack { get; private set; }
         public event Action Changed;
         public OndaSCollectible GetItem(int slot) => slot >= 0 && slot < Capacity ? slots[slot] : null;
@@ -19,6 +23,8 @@ namespace OndaS.Gameplay.Items
             {
                 if (slots[i] != null) continue;
                 slots[i] = item;
+                if (item.Item.Category == OndaSItemCategory.Useful && recordedItems.Add(item.GetInstanceID()))
+                    collectedUsefulItems.Add(item.Item);
                 item.Store(transform);
                 Changed?.Invoke();
                 return true;
