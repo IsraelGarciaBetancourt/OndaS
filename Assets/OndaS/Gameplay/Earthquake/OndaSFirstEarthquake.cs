@@ -282,16 +282,24 @@ namespace OndaS.Gameplay.Earthquake
                 countdownText.text = Mathf.CeilToInt(Mathf.Max(0f, remaining)).ToString();
                 countdownText.color = new Color32(255, 120, 65, 255);
             }
-            if (remaining <= 0f) Defeat();
+            if (remaining <= 0f) Defeat(DefeatCause.Earthquake);
         }
 
         public void DefeatByElectricalHazard()
         {
-            if (HasFinished) Defeat("Tocaste cables eléctricos con corriente");
+            if (HasFinished) Defeat(DefeatCause.Electricity);
         }
 
-        private void Defeat(string reason = "No encontraste refugio durante el sismo")
+        private enum DefeatCause { Earthquake, Electricity }
+
+        private void Defeat(DefeatCause cause)
         {
+            string reason = cause == DefeatCause.Electricity
+                ? "Tocaste cables eléctricos con corriente"
+                : "No encontraste refugio durante el sismo";
+            string hint = cause == DefeatCause.Electricity
+                ? "Evita los cables y apaga la caja de luz antes del sismo."
+                : "Busca refugio debajo de una mesa resistente y permanece allí hasta que termine el sismo.";
             if (defeated) return;
             if (gasFire != null) gasFire.CancelCutscene(false);
             defeated = true;
@@ -316,9 +324,10 @@ namespace OndaS.Gameplay.Earthquake
             backgroundRect.anchorMin = Vector2.zero; backgroundRect.anchorMax = Vector2.one;
             backgroundRect.offsetMin = backgroundRect.offsetMax = Vector2.zero;
             background.GetComponent<Image>().color = new Color(0.015f, 0.01f, 0.01f, 0.98f);
-            CreateDefeatText("Título", "NO SOBREVIVISTE", new Vector2(0f, 80f), 72f, new Color32(220, 75, 55, 255));
-            CreateDefeatText("Motivo", reason, new Vector2(0f, -15f), 32f, new Color32(230, 220, 200, 255));
-            CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -115f), 34f, new Color32(255, 218, 65, 255));
+            CreateDefeatText("Título", "NO SOBREVIVISTE", new Vector2(0f, 170f), 72f, new Color32(220, 75, 55, 255));
+            CreateDefeatText("Motivo", reason, new Vector2(0f, 75f), 32f, new Color32(230, 220, 200, 255));
+            CreateDefeatText("Pista", hint, new Vector2(0f, -35f), 30f, new Color32(230, 220, 200, 255));
+            CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -155f), 34f, new Color32(255, 218, 65, 255));
             Debug.Log("OndaS: " + reason + ".", this);
         }
 
