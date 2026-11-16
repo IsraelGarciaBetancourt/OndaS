@@ -331056,7 +331056,7 @@ MonoBehaviour:
   initialShelterSeconds: 8
   returnToShelterSeconds: 3
   cloudDustMaterial: {fileID: 2100000, guid: 5bb525c9985fb42b1adea35a0c30fab7, type: 2}
-  quakeFogDensity: 0.11
+  quakeFogDensity: 0.035
   settledDustFraction: 0.85
   dustFogColor: {r: 0.29, g: 0.28, b: 0.25, a: 1}
 --- !u!1 &1051785706
@@ -652061,7 +652061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2086899744
 Transform:
   m_ObjectHideFlags: 0

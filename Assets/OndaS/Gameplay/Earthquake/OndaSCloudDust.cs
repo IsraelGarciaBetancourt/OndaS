@@ -14,11 +14,11 @@ namespace OndaS.Gameplay.Earthquake
             main.loop = !impact;
             main.duration = impact ? 3f : 10f;
             main.simulationSpace = ParticleSystemSimulationSpace.World;
-            main.startLifetime = impact ? new ParticleSystem.MinMaxCurve(2.2f, 3.5f) : new ParticleSystem.MinMaxCurve(8f, 14f);
+            main.startLifetime = impact ? new ParticleSystem.MinMaxCurve(2.2f, 3.5f) : new ParticleSystem.MinMaxCurve(12f, 18f);
             main.startSpeed = new ParticleSystem.MinMaxCurve(.01f, .06f);
-            main.startSize = impact ? new ParticleSystem.MinMaxCurve(.65f, 1.4f) : new ParticleSystem.MinMaxCurve(1.1f, 2.5f);
+            main.startSize = impact ? new ParticleSystem.MinMaxCurve(1.1f, 2.1f) : new ParticleSystem.MinMaxCurve(3.5f, 5.5f);
             main.startRotation = new ParticleSystem.MinMaxCurve(0f, 6.283185f);
-            main.startColor = new Color(.54f, .51f, .45f, impact ? .23f : .14f);
+            main.startColor = new Color(.48f, .31f, .19f, impact ? .18f : .12f);
             main.gravityModifier = 0f;
             main.maxParticles = impact ? 18 : 90;
             var emission = particles.emission;
@@ -28,7 +28,7 @@ namespace OndaS.Gameplay.Earthquake
             var shape = particles.shape;
             shape.enabled = true;
             shape.shapeType = ParticleSystemShapeType.Box;
-            shape.scale = impact ? new Vector3(1.2f, .35f, 1.2f) : new Vector3(7f, 2.2f, 7f);
+            shape.scale = impact ? new Vector3(1.2f, .35f, 1.2f) : new Vector3(4f, 2.3f, 11f);
             var velocity = particles.velocityOverLifetime;
             velocity.enabled = true;
             velocity.space = ParticleSystemSimulationSpace.World;

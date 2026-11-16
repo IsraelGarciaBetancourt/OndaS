@@ -29,7 +29,7 @@ namespace OndaS.Gameplay.Earthquake
         [SerializeField, Min(0.1f)] private float returnToShelterSeconds = 3f;
         [Header("Polvo del sismo")]
         [SerializeField] private Material cloudDustMaterial;
-        [SerializeField, Min(0f)] private float quakeFogDensity = 0.11f;
+        [SerializeField, Min(0f)] private float quakeFogDensity = 0.035f;
         [SerializeField, Range(0f, 1f)] private float settledDustFraction = 0.85f;
         [SerializeField] private Color dustFogColor = new Color(0.29f, 0.28f, 0.25f);
 
@@ -57,6 +57,7 @@ namespace OndaS.Gameplay.Earthquake
         private Vector3 cameraOriginalPosition, cameraOriginalScale;
         private ParticleSystem dustTemplate;
         private ParticleSystem suspendedDust;
+        private int dustFloor = -1;
         private bool originalFogEnabled, ownsDustFog;
         private FogMode originalFogMode;
         private Color originalFogColor;
@@ -564,7 +565,10 @@ namespace OndaS.Gameplay.Earthquake
             if (!started) return;
             float target = finished ? settledDustFraction : 1f;
             dustFraction = Mathf.MoveTowards(dustFraction, target, Time.deltaTime / (finished ? 12f : 7f));
-            bool onFloor = PlayerOnFloor();
+            bool inBuildingCorridor = player != null && player.position.y >= 0f && player.position.y < 32.2f &&
+                player.position.z >= -16.5f && player.position.z <= 16.5f &&
+                (player.position.y < 4f ? player.position.x >= 0f && player.position.x < 34f : player.position.x >= 10f && player.position.x <= 15f);
+            bool onFloor = PlayerOnFloor() || (finished && inBuildingCorridor);
             if (onFloor)
             {
                 if (!ownsDustFog)
@@ -589,13 +593,22 @@ namespace OndaS.Gameplay.Earthquake
             if (suspendedDust == null) return;
             if (onFloor)
             {
-                suspendedDust.transform.position = new Vector3(player.position.x, transform.position.y + 1.5f, player.position.z);
+                suspendedDust.transform.position = new Vector3(player.position.x, player.position.y + .55f, player.position.z);
                 var emission = suspendedDust.emission;
-                emission.rateOverTime = Mathf.Lerp(1f, 4f, dustFraction);
-                if (!suspendedDust.isPlaying) suspendedDust.Play();
+                emission.rateOverTime = Mathf.Lerp(1.2f, 3f, dustFraction);
+                int currentFloor = Mathf.Clamp(Mathf.FloorToInt((player.position.y - .1f) / 4f), 0, 7);
+                if (!suspendedDust.isPlaying || currentFloor != dustFloor)
+                {
+                    dustFloor = currentFloor;
+                    suspendedDust.Simulate(10f, true, true);
+                    suspendedDust.Play();
+                }
             }
             else if (suspendedDust.isPlaying)
+            {
                 suspendedDust.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                dustFloor = -1;
+            }
         }
 
         private void RestoreFog()

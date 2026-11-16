@@ -41,16 +41,13 @@ public static class OndaSCloudDustSetup
         { Debug.LogError("Abre la escena principal y prepara primero el material de polvo."); return; }
         var serialized = new SerializedObject(quake);
         serialized.FindProperty("cloudDustMaterial").objectReferenceValue = material;
+        serialized.FindProperty("quakeFogDensity").floatValue = .035f;
         serialized.ApplyModifiedPropertiesWithoutUndo();
         foreach (var system in Object.FindObjectsByType<ParticleSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (system.name != "Piso 3 - polvo suspendido") continue;
-            OndaSCloudDust.Configure(system, material);
-            var main = system.main; main.playOnAwake = true;
-            var shape = system.shape; shape.scale = new Vector3(2.2f, 2f, 5f);
-            var emission = system.emission; emission.rateOverTime = 1.4f;
-            EditorUtility.SetDirty(system);
-            EditorUtility.SetDirty(system.GetComponent<ParticleSystemRenderer>());
+            system.gameObject.SetActive(false);
+            EditorUtility.SetDirty(system.gameObject);
         }
         EditorSceneManager.MarkSceneDirty(scene); EditorSceneManager.SaveScene(scene);
         Debug.Log("OndaS: polvo del sismo actualizado.");
