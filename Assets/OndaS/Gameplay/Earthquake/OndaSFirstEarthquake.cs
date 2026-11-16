@@ -299,7 +299,7 @@ namespace OndaS.Gameplay.Earthquake
                 : "No encontraste refugio durante el sismo";
             string hint = cause == DefeatCause.Electricity
                 ? "Evita los cables y apaga la caja de luz antes del sismo."
-                : "Busca refugio debajo de una mesa resistente y permanece allí hasta que termine el sismo.";
+                : "Refúgiate bajo la mesa o el escritorio con [E] y espera hasta que termine el sismo.";
             if (defeated) return;
             if (gasFire != null) gasFire.CancelCutscene(false);
             defeated = true;
@@ -334,7 +334,12 @@ namespace OndaS.Gameplay.Earthquake
                     CreateDefeatImage("Cables", hintImages, 0, new Vector2(-225f, 30f));
                     CreateDefeatImage("Caja de luz", hintImages, 1, new Vector2(225f, 30f));
                 }
-                else CreateDefeatImage("Refugio", hintImages, 2, new Vector2(0f, 30f));
+                else
+                {
+                    CreateDefeatImage("Mesa", hintImages, 2, new Vector2(-225f, 30f));
+                    var deskImage = Resources.Load<Texture2D>("DefeatHints/DeskShelter");
+                    if (deskImage != null) CreateDefeatImage("Escritorio", deskImage, -1, new Vector2(225f, 30f));
+                }
             }
             CreateDefeatText("Pista", hint, new Vector2(0f, -255f), 30f, new Color32(230, 220, 200, 255));
             CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -390f), 34f, new Color32(255, 218, 65, 255));
@@ -351,7 +356,7 @@ namespace OndaS.Gameplay.Earthquake
             rect.sizeDelta = new Vector2(400f, 400f);
             var image = go.GetComponent<RawImage>();
             image.texture = atlas;
-            image.uvRect = new Rect(panel / 3f, 0f, 1f / 3f, 1f);
+            image.uvRect = panel < 0 ? new Rect(0f, 0f, 1f, 1f) : new Rect(panel / 3f, 0f, 1f / 3f, 1f);
             image.raycastTarget = false;
         }
 
