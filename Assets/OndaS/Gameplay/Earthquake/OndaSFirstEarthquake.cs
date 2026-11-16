@@ -324,11 +324,35 @@ namespace OndaS.Gameplay.Earthquake
             backgroundRect.anchorMin = Vector2.zero; backgroundRect.anchorMax = Vector2.one;
             backgroundRect.offsetMin = backgroundRect.offsetMax = Vector2.zero;
             background.GetComponent<Image>().color = new Color(0.015f, 0.01f, 0.01f, 0.98f);
-            CreateDefeatText("Título", "NO SOBREVIVISTE", new Vector2(0f, 170f), 72f, new Color32(220, 75, 55, 255));
-            CreateDefeatText("Motivo", reason, new Vector2(0f, 75f), 32f, new Color32(230, 220, 200, 255));
-            CreateDefeatText("Pista", hint, new Vector2(0f, -35f), 30f, new Color32(230, 220, 200, 255));
-            CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -155f), 34f, new Color32(255, 218, 65, 255));
+            CreateDefeatText("Título", "NO SOBREVIVISTE", new Vector2(0f, 390f), 72f, new Color32(220, 75, 55, 255));
+            CreateDefeatText("Motivo", reason, new Vector2(0f, 300f), 32f, new Color32(230, 220, 200, 255));
+            var hintImages = Resources.Load<Texture2D>("DefeatHints/DeathHints");
+            if (hintImages != null)
+            {
+                if (cause == DefeatCause.Electricity)
+                {
+                    CreateDefeatImage("Cables", hintImages, 0, new Vector2(-225f, 30f));
+                    CreateDefeatImage("Caja de luz", hintImages, 1, new Vector2(225f, 30f));
+                }
+                else CreateDefeatImage("Refugio", hintImages, 2, new Vector2(0f, 30f));
+            }
+            CreateDefeatText("Pista", hint, new Vector2(0f, -255f), 30f, new Color32(230, 220, 200, 255));
+            CreateDefeatText("Reintentar", "[R / ENTER] REINTENTAR", new Vector2(0f, -390f), 34f, new Color32(255, 218, 65, 255));
             Debug.Log("OndaS: " + reason + ".", this);
+        }
+
+        private void CreateDefeatImage(string name, Texture2D atlas, int panel, Vector2 position)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(RawImage));
+            go.transform.SetParent(defeatCanvas.transform, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = position;
+            rect.sizeDelta = new Vector2(400f, 400f);
+            var image = go.GetComponent<RawImage>();
+            image.texture = atlas;
+            image.uvRect = new Rect(panel / 3f, 0f, 1f / 3f, 1f);
+            image.raycastTarget = false;
         }
 
         private void CreateDefeatText(string name, string value, Vector2 position, float size, Color color)
