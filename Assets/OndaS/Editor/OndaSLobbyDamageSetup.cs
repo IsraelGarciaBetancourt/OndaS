@@ -23,6 +23,46 @@ public static class OndaSLobbyDamageSetup
         Save("estructura del lobby");
     }
 
+    [MenuItem("OndaS/Desgastar techo y suelo del lobby")]
+    public static void SurfaceDamage()
+    {
+        var damage = Prepare("Lobby - techo y restos del sismo");
+        if (damage == null) return;
+        var root = Group(damage, "Lobby - techo y restos del sismo");
+        DamagedCeiling(root, new Vector3(16.8f,3.02f,8.7f), 1);
+        DamagedCeiling(root, new Vector3(23f,3.02f,-5.8f), -1);
+        DamagedCeiling(root, new Vector3(28.3f,3.02f,7f), 1);
+        DamagedCeiling(root, new Vector3(21f,3.02f,1f), -1);
+        var scatter = Group(root,"Restos repartidos por el vestíbulo");
+        var points = new[] {
+            new Vector3(13.8f,.1f,7.5f), new Vector3(15.1f,.1f,5.8f), new Vector3(18f,.1f,6.9f),
+            new Vector3(18.6f,.1f,-1.3f), new Vector3(20.4f,.1f,-3.2f), new Vector3(22.2f,.1f,2.4f),
+            new Vector3(24.8f,.1f,-3.6f), new Vector3(25f,.1f,5.3f), new Vector3(27f,.1f,3.4f),
+            new Vector3(30.3f,.1f,-2.5f), new Vector3(31.5f,.1f,5.5f)
+        };
+        for(int i=0;i<points.Length;i++) {
+            var p=points[i];
+            Piece(scatter,"Trozo de yeso y hormigón",p+new Vector3(0,.07f,0),new Vector3(.42f,.14f,.32f),new Vector3(3,i*39,4),i%4);
+            Piece(scatter,"Astilla del techo",p+new Vector3(.27f,.04f,.19f),new Vector3(.24f,.07f,.16f),new Vector3(0,i*67,0),(i+1)%4);
+        }
+        for(int i=0;i<5;i++) {
+            var p=new Vector3(17.7f+i*1.7f,.112f,-2.0f+(i%2)*.4f);
+            Bar(root,p,new Vector3(.68f,.016f,.028f),new Vector3(0,20+i*16,0));
+        }
+        Save("techo y restos del lobby");
+    }
+
+    static void DamagedCeiling(Transform parent,Vector3 p,int side)
+    {
+        var g=Group(parent,"Techo roto y varillas colgantes");
+        // Dark irregular backing suggests a missing section, while the fragments hang below it.
+        Piece(g,"Hueco entre placas rotas",p,new Vector3(2.5f,.035f,1.7f),new Vector3(0,side*11,0),2,metal);
+        Piece(g,"Placa de techo quebrada",p+new Vector3(-.55f,-.16f,-.22f),new Vector3(1.05f,.11f,.85f),new Vector3(side*9,side*15,side*12),0);
+        Piece(g,"Placa de techo desprendida",p+new Vector3(.65f,-.28f,.2f),new Vector3(1.1f,.12f,.8f),new Vector3(side*-10,side*-8,side*-20),1);
+        for(int i=0;i<4;i++)
+            Bar(g,p+new Vector3(-.85f+i*.56f,-.38f,(i%2==0?-.35f:.35f)),new Vector3(.025f,.7f+i*.1f,.025f),new Vector3(side*(8+i*4),0,side*(15+i*7)));
+    }
+
     static Transform Prepare(string groupName)
     {
         var scene = SceneManager.GetActiveScene();
