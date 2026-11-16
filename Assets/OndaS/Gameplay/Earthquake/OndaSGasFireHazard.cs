@@ -29,6 +29,13 @@ namespace OndaS.Gameplay.Earthquake
         private Vector3 frontPosition;
         private int spreadSites;
         private float nextLightUpdate;
+        private struct FireSite
+        {
+            public Vector3 position;
+            public float radius;
+        }
+        private readonly List<FireSite> fireSites = new List<FireSite>();
+        private CharacterController playerController;
         private readonly List<Light> fireLights = new List<Light>();
         private readonly List<Transform> floors = new List<Transform>();
 
@@ -38,6 +45,7 @@ namespace OndaS.Gameplay.Earthquake
             valve = source;
             earthquake = GetComponent<OndaSFirstEarthquake>();
             movement = player;
+            playerController = player.GetComponent<CharacterController>();
             interactor = playerInteractor;
             playerCamera = camera;
             effectsRoot = new GameObject("OndaS - Incendio por gas");
@@ -161,6 +169,7 @@ namespace OndaS.Gameplay.Earthquake
             // The earthquake moves the camera's parent; keep the cinematic view fixed.
             if (inCutscene && playerCamera != null)
                 playerCamera.transform.SetPositionAndRotation(cutscenePosition, cutsceneRotation);
+            CheckFireContact();
             if (Time.time < nextLightUpdate) return;
             nextLightUpdate = Time.time + 0.12f;
             Vector3 viewer = playerCamera != null ? playerCamera.transform.position : transform.position;
@@ -170,6 +179,22 @@ namespace OndaS.Gameplay.Earthquake
                 if (fireLight == null) continue;
                 fireLight.enabled = (fireLight.transform.position - viewer).sqrMagnitude < 484f;
                 if (fireLight.enabled) fireLight.intensity = 2.8f + Mathf.PerlinNoise(Time.time * 4f, i * 0.73f) * 1.4f;
+            }
+        }
+
+        private void CheckFireContact()
+        {
+            if (inCutscene || movement == null || !movement.isActiveAndEnabled ||
+                playerController == null || !playerController.enabled || earthquake == null) return;
+            Bounds playerBounds = playerController.bounds;
+            foreach (var site in fireSites)
+            {
+                if (playerBounds.max.y < site.position.y || playerBounds.min.y > site.position.y + 2f) continue;
+                float x = Mathf.Max(playerBounds.min.x - site.position.x, 0f, site.position.x - playerBounds.max.x);
+                float z = Mathf.Max(playerBounds.min.z - site.position.z, 0f, site.position.z - playerBounds.max.z);
+                if (x * x + z * z > site.radius * site.radius) continue;
+                earthquake.DefeatByFire();
+                return;
             }
         }
 
@@ -360,6 +385,7 @@ namespace OndaS.Gameplay.Earthquake
             var root = new GameObject("OndaS - Foco de incendio");
             root.transform.SetParent(effectsRoot.transform, true);
             root.transform.position = position;
+            fireSites.Add(new FireSite { position = position, radius = 0.55f * size });
             if (flameMaterial != null)
             {
                 var fire = MakeParticles(root.transform, "Llamas", flameMaterial, size, false);

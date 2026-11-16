@@ -290,15 +290,20 @@ namespace OndaS.Gameplay.Earthquake
             if (HasFinished) Defeat(DefeatCause.Electricity);
         }
 
-        private enum DefeatCause { Earthquake, Electricity }
+        public void DefeatByFire()
+        {
+            Defeat(DefeatCause.Fire);
+        }
+
+        private enum DefeatCause { Earthquake, Electricity, Fire }
 
         private void Defeat(DefeatCause cause)
         {
-            string reason = cause == DefeatCause.Electricity
-                ? "Tocaste cables eléctricos con corriente"
+            string reason = cause == DefeatCause.Fire ? "El fuego te alcanzó"
+                : cause == DefeatCause.Electricity ? "Tocaste cables eléctricos con corriente"
                 : "No encontraste refugio durante el sismo";
-            string hint = cause == DefeatCause.Electricity
-                ? "Evita los cables y apaga la caja de luz antes del sismo."
+            string hint = cause == DefeatCause.Fire ? "Aléjate de las llamas y cierra la válvula de gas antes del sismo."
+                : cause == DefeatCause.Electricity ? "Evita los cables y apaga la caja de luz antes del sismo."
                 : "Refúgiate bajo la mesa o el escritorio con [E] y espera hasta que termine el sismo.";
             if (defeated) return;
             if (gasFire != null) gasFire.CancelCutscene(false);
@@ -334,7 +339,7 @@ namespace OndaS.Gameplay.Earthquake
                     CreateDefeatImage("Cables", hintImages, 0, new Vector2(-225f, 30f));
                     CreateDefeatImage("Caja de luz", hintImages, 1, new Vector2(225f, 30f));
                 }
-                else
+                else if (cause == DefeatCause.Earthquake)
                 {
                     CreateDefeatImage("Mesa", hintImages, 2, new Vector2(-225f, 30f));
                     var deskImage = Resources.Load<Texture2D>("DefeatHints/DeskShelter");
