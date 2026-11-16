@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using OndaS.Gameplay.Electrical;
+using OndaS.Gameplay.Gas;
+using OndaS.Gameplay.Items;
 using OndaS.Gameplay.UI;
 using OndaS.Visual;
 using TMPro;
@@ -16,6 +20,10 @@ namespace OndaS.Gameplay
         private GameObject victoryCanvas;
         private BoxCollider zone;
         private CharacterController playerController;
+        private const int ItemsPerPage = 8;
+        private readonly List<string> usefulItems = new List<string>();
+        private TextMeshProUGUI itemsText, pageText;
+        private int itemPage;
 
         private void Reset() => ConfigureTrigger();
         private void Awake()
@@ -51,7 +59,7 @@ namespace OndaS.Gameplay
             zone.enabled = false;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-            ShowVictory();
+            ShowVictory(player);
             Time.timeScale = 0f;
         }
 
@@ -67,12 +75,16 @@ namespace OndaS.Gameplay
                 return;
             }
             var keyboard = Keyboard.current;
-            if (keyboard == null || (!keyboard.rKey.wasPressedThisFrame && !keyboard.enterKey.wasPressedThisFrame && !keyboard.numpadEnterKey.wasPressedThisFrame)) return;
+            if (keyboard == null) return;
+            int pageCount = Mathf.Max(1, (usefulItems.Count + ItemsPerPage - 1) / ItemsPerPage);
+            if (keyboard.leftArrowKey.wasPressedThisFrame && itemPage > 0) { itemPage--; RefreshItems(); }
+            if (keyboard.rightArrowKey.wasPressedThisFrame && itemPage + 1 < pageCount) { itemPage++; RefreshItems(); }
+            if (!keyboard.rKey.wasPressedThisFrame && !keyboard.enterKey.wasPressedThisFrame && !keyboard.numpadEnterKey.wasPressedThisFrame) return;
             Time.timeScale = previousTimeScale;
             SceneManager.LoadScene(gameObject.scene.path);
         }
 
-        private void ShowVictory()
+        private void ShowVictory(OndaSLookDevWalkthrough player)
         {
             victoryCanvas = new GameObject("OndaS - Victoria", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
             var canvas = victoryCanvas.GetComponent<Canvas>();
@@ -88,22 +100,70 @@ namespace OndaS.Gameplay
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
             rect.offsetMin = rect.offsetMax = Vector2.zero;
             background.GetComponent<Image>().color = new Color(0.015f, 0.015f, 0.012f, 0.98f);
-            CreateText("Título", "¡ESCAPASTE!", new Vector2(0f, 80f), 72f, new Color32(255, 218, 65, 255));
-            CreateText("Mensaje", "Has salido del edificio", new Vector2(0f, -15f), 32f, new Color32(230, 220, 200, 255));
-            CreateText("Reiniciar", "[R / ENTER] VOLVER A JUGAR", new Vector2(0f, -115f), 34f, new Color32(255, 218, 65, 255));
+            var inventory = player.GetComponent<OndaSInventory>();
+            if (inventory != null)
+            {
+                var counts = new SortedDictionary<string, int>();
+                foreach (var item in inventory.CollectedUsefulItems)
+                {
+                    if (item == null) continue;
+                    string name = string.IsNullOrWhiteSpace(item.DisplayName) ? "Objeto útil" : item.DisplayName;
+                    counts.TryGetValue(name, out int count);
+                    counts[name] = count + 1;
+                }
+                foreach (var entry in counts)
+                    usefulItems.Add(entry.Key + (entry.Value > 1 ? "  x" + entry.Value : ""));
+            }
+            var gas = FindFirstObjectByType<OndaSGasValve>();
+            var fuseBox = FindFirstObjectByType<OndaSFuseBox>();
+            var warmWhite = new Color32(230, 220, 200, 255);
+            var gold = new Color32(255, 218, 65, 255);
+            CreateText("Título", "¡ESCAPASTE!", new Vector2(0f, 415f), new Vector2(1200f, 100f), 72f, gold);
+            CreateText("Mensaje", "RESUMEN DE TU EVACUACIÓN", new Vector2(0f, 335f), new Vector2(1200f, 60f), 28f, warmWhite);
+            CreateStatus("Gas", "VÁLVULA DE GAS", gas != null ? (bool?)gas.IsClosed : null, new Vector2(-330f, 230f));
+            CreateStatus("Electricidad", "ELECTRICIDAD", fuseBox != null ? (bool?)fuseBox.IsPowerIsolated : null, new Vector2(330f, 230f));
+            CreateText("Objetos título", "OBJETOS ÚTILES RECOGIDOS", new Vector2(0f, 125f), new Vector2(1200f, 60f), 30f, gold);
+            itemsText = CreateText("Objetos", "", new Vector2(0f, -75f), new Vector2(1100f, 330f), 30f, warmWhite);
+            pageText = CreateText("Páginas", "", new Vector2(0f, -290f), new Vector2(1100f, 60f), 24f, warmWhite);
+            RefreshItems();
+            CreateText("Reiniciar", "[R / ENTER] VOLVER A JUGAR", new Vector2(0f, -415f), new Vector2(1200f, 80f), 34f, gold);
         }
 
-        private void CreateText(string name, string value, Vector2 position, float size, Color color)
+        private void CreateStatus(string name, string label, bool? completed, Vector2 position)
+        {
+            CreateText(name + " título", label, position + new Vector2(0f, 25f), new Vector2(600f, 50f), 27f, new Color32(230, 220, 200, 255));
+            string value = !completed.HasValue ? "SIN DATOS" : completed.Value ? "CERRADA" : "NO CERRADA";
+            if (name == "Electricidad" && completed.HasValue) value = completed.Value ? "APAGADA" : "NO APAGADA";
+            var color = !completed.HasValue ? new Color32(165, 160, 150, 255) : completed.Value ? new Color32(159, 205, 140, 255) : new Color32(218, 143, 96, 255);
+            CreateText(name + " estado", value, position - new Vector2(0f, 20f), new Vector2(600f, 50f), 29f, color);
+        }
+
+        private void RefreshItems()
+        {
+            if (itemsText == null || pageText == null) return;
+            int pages = Mathf.Max(1, (usefulItems.Count + ItemsPerPage - 1) / ItemsPerPage);
+            if (usefulItems.Count == 0) itemsText.text = "No recogiste objetos útiles.";
+            else
+            {
+                int start = itemPage * ItemsPerPage;
+                int count = Mathf.Min(ItemsPerPage, usefulItems.Count - start);
+                itemsText.text = string.Join("\n", usefulItems.GetRange(start, count));
+            }
+            pageText.text = pages > 1 ? "[FLECHAS IZQ / DER]  " + (itemPage + 1) + " / " + pages : "";
+        }
+
+        private TextMeshProUGUI CreateText(string name, string value, Vector2 position, Vector2 size, float fontSize, Color color)
         {
             var obj = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
             obj.transform.SetParent(victoryCanvas.transform, false);
             var rect = obj.GetComponent<RectTransform>();
             rect.anchorMin = rect.anchorMax = rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = position; rect.sizeDelta = new Vector2(1200f, 100f);
+            rect.anchoredPosition = position; rect.sizeDelta = size;
             var text = obj.GetComponent<TextMeshProUGUI>();
             OndaSTypography.Apply(text);
-            text.text = value; text.fontSize = size; text.color = color;
+            text.text = value; text.fontSize = fontSize; text.color = color;
             text.alignment = TextAlignmentOptions.Center; text.raycastTarget = false;
+            return text;
         }
 
         private void OnDestroy()
