@@ -94,7 +94,10 @@ namespace OndaS.Visual
             standingCameraY = viewCamera.transform.localPosition.y;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-            sceneLights = Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var buildingLights = new List<Light>();
+            foreach (var light in Object.FindObjectsByType<Light>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (light.GetComponentInParent<OndaSStreetLight>() == null) buildingLights.Add(light);
+            sceneLights = buildingLights.ToArray();
             lightStates = new bool[sceneLights.Length];
             sceneLightIntensities = new float[sceneLights.Length];
             for (int i = 0; i < sceneLights.Length; i++) if (sceneLights[i] != null) sceneLightIntensities[i] = sceneLights[i].intensity;
@@ -485,7 +488,7 @@ namespace OndaS.Visual
         {
             foreach (var renderer in Object.FindObjectsByType<Renderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
             {
-                if (!renderer.gameObject.scene.IsValid() || renderer.transform.IsChildOf(transform)) continue;
+                if (!renderer.gameObject.scene.IsValid() || renderer.transform.IsChildOf(transform) || renderer.GetComponentInParent<OndaSStreetLight>() != null) continue;
                 if (renderer.name.StartsWith("Glow", System.StringComparison.OrdinalIgnoreCase) ||
                     renderer.name.StartsWith("Flame", System.StringComparison.OrdinalIgnoreCase) ||
                     renderer.name.Equals("Bulb", System.StringComparison.OrdinalIgnoreCase) ||
