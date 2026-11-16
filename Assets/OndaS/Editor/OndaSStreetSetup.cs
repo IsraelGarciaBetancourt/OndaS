@@ -68,8 +68,8 @@ public static class OndaSStreetSetup
         Block(post,"Difusor",post.position+new Vector3(direction*1.2f,5.34f,0),new Vector3(.50f,.05f,.30f),lamp,false);
         var bulb = new GameObject("Luz cálida",typeof(Light)); bulb.transform.SetParent(post,false);
         bulb.transform.localPosition=new Vector3(direction*1.2f,5.29f,0); bulb.transform.localRotation=Quaternion.Euler(90,0,0);
-        var light=bulb.GetComponent<Light>(); light.type=LightType.Spot; light.range=15; light.spotAngle=120;
-        light.color=new Color(1f,.72f,.43f); light.intensity=60f; light.shadows=LightShadows.None;
+        var light=bulb.GetComponent<Light>(); light.type=LightType.Spot; light.range=22; light.spotAngle=120;
+        light.color=new Color(1f,.72f,.43f); light.intensity=240f; light.shadows=LightShadows.None;
     }
 
     [MenuItem("OndaS/Conectar luces exteriores")]
@@ -81,7 +81,8 @@ public static class OndaSStreetSetup
             var old = light.GetComponent<OndaSStreetLight>();
             if (old != null) Object.DestroyImmediate(old);
             if (light.GetComponentInParent<OndaSStreetLight>() == null) light.transform.parent.gameObject.AddComponent<OndaSStreetLight>();
-            light.intensity = 60f;
+            light.intensity = 240f;
+            light.range = 22f;
         }
         ConfigureLampMaterial(Material("Calle_Farola", new Color(.72f,.66f,.49f)));
         AssetDatabase.SaveAssets();
