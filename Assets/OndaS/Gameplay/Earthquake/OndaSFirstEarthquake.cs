@@ -509,7 +509,7 @@ namespace OndaS.Gameplay.Earthquake
             }
         }
 
-        private static void PrepareDynamicColliders(GameObject go)
+        internal static void PrepareDynamicColliders(GameObject go)
         {
             bool needsApproximation = true;
             bool hadNonConvexMesh = false;
