@@ -128,6 +128,7 @@ namespace OndaS.Visual
 
         private void Update()
         {
+            if (OndaS.Gameplay.OndaSIntroSequence.IsPlaying) return;
             RemoveSprintShake();
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;

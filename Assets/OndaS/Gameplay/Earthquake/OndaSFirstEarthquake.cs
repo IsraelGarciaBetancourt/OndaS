@@ -81,6 +81,7 @@ namespace OndaS.Gameplay.Earthquake
         private int brokenCount;
         public bool HasFinished => finished && !defeated;
         public bool IsDefeated => defeated;
+        public void SetIntroHudVisible(bool visible) { if (countdownCanvas != null) countdownCanvas.SetActive(visible); }
         public float VelocidadIncendio => Mathf.Max(0.05f, velocidadIncendio);
         public float SegundosPorTramoEscalera => Mathf.Max(0.1f, segundosPorTramoEscalera);
 
@@ -203,6 +204,7 @@ namespace OndaS.Gameplay.Earthquake
 
         private void Update()
         {
+            if (OndaS.Gameplay.OndaSIntroSequence.IsPlaying) return;
             if (defeated)
             {
                 var keyboard = Keyboard.current;

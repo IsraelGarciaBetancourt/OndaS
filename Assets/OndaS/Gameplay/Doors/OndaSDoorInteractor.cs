@@ -57,6 +57,7 @@ namespace OndaS.Gameplay
         }
         private void Update()
         {
+            if (OndaSIntroSequence.IsPlaying) { ShowPrompt(null); return; }
             if (heldVisual != null && playerMovement != null)
                 heldVisual.SetActive(playerMovement.enabled);
             if (holdingFlashlight && heldVisual != null) UpdateFlashlightPose();
