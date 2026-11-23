@@ -6,7 +6,6 @@ namespace OndaS.Gameplay.Earthquake
     public sealed class OndaSShelterPoint : MonoBehaviour
     {
         [SerializeField, Min(0.2f)] private float approachDistance = 1.25f;
-        [SerializeField, Min(0.1f)] private float aimRadius = 0.55f;
         [SerializeField, Min(0.1f)] private float shelterHeight = 0.75f;
         public Vector3 EntryPosition => transform.position;
         public Transform Interior => transform.Find("Interior");
@@ -18,10 +17,13 @@ namespace OndaS.Gameplay.Earthquake
             Vector3 offset = Vector3.ProjectOnPlane(player.position - transform.position, Vector3.up);
             Vector3 inward = Vector3.ProjectOnPlane(Interior.position - transform.position, Vector3.up).normalized;
             if (offset.magnitude > approachDistance || inward.sqrMagnitude < 0.01f || Vector3.Dot(offset, inward) > 0.15f) return false;
-            Vector3 target = transform.position + Vector3.up * 0.5f;
+            // Accept a natural forward gaze toward the furniture; the entry marker is
+            // on the floor and should not require the player to aim down at it.
+            Vector3 facing = Vector3.ProjectOnPlane(camera.transform.forward, Vector3.up).normalized;
+            if (facing.sqrMagnitude < 0.01f || Vector3.Dot(facing, inward) < 0.25f) return false;
+            Vector3 target = transform.position + Vector3.up * 1.0f;
             Vector3 toTarget = target - camera.transform.position;
-            float along = Vector3.Dot(toTarget, camera.transform.forward);
-            if (along <= 0f || along > 2.5f || (toTarget - camera.transform.forward * along).sqrMagnitude > aimRadius * aimRadius) return false;
+            if (toTarget.sqrMagnitude < 0.001f) return true;
             foreach (var hit in Physics.RaycastAll(camera.transform.position, toTarget.normalized, toTarget.magnitude - 0.03f, ~0, QueryTriggerInteraction.Ignore))
                 if (!hit.collider.transform.IsChildOf(player)) return false;
             return true;
