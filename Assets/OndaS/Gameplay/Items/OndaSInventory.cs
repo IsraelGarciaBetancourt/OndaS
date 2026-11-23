@@ -9,7 +9,7 @@ namespace OndaS.Gameplay.Items
         public const int Capacity = 2;
         public const int BackpackSlot = 2;
         private readonly OndaSCollectible[] slots = new OndaSCollectible[Capacity];
-        private readonly HashSet<int> recordedItems = new HashSet<int>();
+        private readonly HashSet<EntityId> recordedItems = new HashSet<EntityId>();
         private readonly List<OndaSItemDefinition> collectedUsefulItems = new List<OndaSItemDefinition>();
         public IReadOnlyList<OndaSItemDefinition> CollectedUsefulItems => collectedUsefulItems;
         public OndaSBackpack Backpack { get; private set; }
@@ -23,7 +23,7 @@ namespace OndaS.Gameplay.Items
             {
                 if (slots[i] != null) continue;
                 slots[i] = item;
-                if (item.Item.Category == OndaSItemCategory.Useful && recordedItems.Add(item.GetInstanceID()))
+                if (item.Item.Category == OndaSItemCategory.Useful && recordedItems.Add(item.GetEntityId()))
                     collectedUsefulItems.Add(item.Item);
                 item.Store(transform);
                 Changed?.Invoke();
