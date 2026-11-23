@@ -369498,6 +369498,7 @@ GameObject:
   - component: {fileID: 1153868278}
   - component: {fileID: 1153868277}
   - component: {fileID: 1153868276}
+  - component: {fileID: 1153868279}
   m_Layer: 0
   m_Name: "OndaS - Zona r\xE9plica piso 4"
   m_TagString: Untagged
@@ -369554,6 +369555,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1153868279
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1153868275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40b228ed6653f442f8fedc062770b119, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Earthquake.OndaSAftershock
+  duration: 22
+  initialShelterSeconds: 15
+  returnToShelterSeconds: 3
+  shakeStrength: 0.85
 --- !u!1001 &1153879498
 PrefabInstance:
   m_ObjectHideFlags: 0

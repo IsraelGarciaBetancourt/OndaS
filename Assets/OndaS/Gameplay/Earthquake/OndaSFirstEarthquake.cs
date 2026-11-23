@@ -70,6 +70,8 @@ namespace OndaS.Gameplay.Earthquake
         private int displayedSeconds = -1;
         private float elapsed, shakeElapsed, intensity;
         private bool started, finished;
+        private bool aftershockActive;
+        private float aftershockIntensity, aftershockElapsed;
         private bool powerCut;
         private bool gasChecked;
         private OndaSGasFireHazard gasFire;
@@ -78,6 +80,7 @@ namespace OndaS.Gameplay.Earthquake
         private OndaS.Visual.OndaSLookDevWalkthrough playerMovement;
         private int brokenCount;
         public bool HasFinished => finished && !defeated;
+        public bool IsDefeated => defeated;
         public float VelocidadIncendio => Mathf.Max(0.05f, velocidadIncendio);
         public float SegundosPorTramoEscalera => Mathf.Max(0.1f, segundosPorTramoEscalera);
 
@@ -285,6 +288,40 @@ namespace OndaS.Gameplay.Earthquake
             if (remaining <= 0f) Defeat(DefeatCause.Earthquake);
         }
 
+        // Reuse the same camera pivot, sound and HUD as the first earthquake.
+        public void BeginAftershock()
+        {
+            if (!HasFinished || aftershockActive) return;
+            aftershockActive = true;
+            aftershockElapsed = aftershockIntensity = 0f;
+            if (countdownCanvas != null) countdownCanvas.SetActive(true);
+            if (rumble != null) { rumble.volume = 0f; rumble.Play(); }
+        }
+
+        public void UpdateAftershock(float time, float strength, bool protectedPlayer, float remaining)
+        {
+            if (!aftershockActive || defeated) return;
+            aftershockElapsed = time;
+            aftershockIntensity = Mathf.Clamp01(strength);
+            if (rumble != null) rumble.volume = aftershockIntensity * .55f;
+            if (countdownLabel != null) countdownLabel.text = protectedPlayer ? "PROTEGIDO" : "¡BUSCA REFUGIO!";
+            if (countdownText != null)
+            {
+                countdownText.text = Mathf.CeilToInt(Mathf.Max(0f, remaining)).ToString();
+                countdownText.color = protectedPlayer ? new Color32(255, 218, 65, 255) : new Color32(255, 120, 65, 255);
+            }
+        }
+
+        public void EndAftershock()
+        {
+            aftershockActive = false;
+            aftershockIntensity = 0f;
+            if (rumble != null) rumble.Stop();
+            if (countdownCanvas != null) countdownCanvas.SetActive(false);
+        }
+
+        public void DefeatByAftershock() { Defeat(DefeatCause.Earthquake); }
+
         public void DefeatByElectricalHazard()
         {
             if (HasFinished) Defeat(DefeatCause.Electricity);
@@ -308,6 +345,8 @@ namespace OndaS.Gameplay.Earthquake
             if (defeated) return;
             if (gasFire != null) gasFire.CancelCutscene(false);
             defeated = true;
+            aftershockActive = false;
+            aftershockIntensity = 0f;
             finished = true;
             intensity = 0f;
             if (rumble != null) rumble.Stop();
@@ -390,10 +429,11 @@ namespace OndaS.Gameplay.Earthquake
         private void LateUpdate()
         {
             if (cameraPivot == null) return;
-            float amount = started && !finished && PlayerOnFloor() ? intensity * cameraStrength : 0f;
-            float x = (Mathf.PerlinNoise(shakeElapsed * 4.6f, 0.1f) - 0.5f) * amount;
-            float y = (Mathf.PerlinNoise(0.7f, shakeElapsed * 5.2f) - 0.5f) * amount;
-            float z = (Mathf.PerlinNoise(shakeElapsed * 3.4f, 9f) - 0.5f) * amount;
+            float amount = aftershockActive ? aftershockIntensity * cameraStrength : started && !finished && PlayerOnFloor() ? intensity * cameraStrength : 0f;
+            float time = aftershockActive ? aftershockElapsed : shakeElapsed;
+            float x = (Mathf.PerlinNoise(time * 4.6f, 0.1f) - 0.5f) * amount;
+            float y = (Mathf.PerlinNoise(0.7f, time * 5.2f) - 0.5f) * amount;
+            float z = (Mathf.PerlinNoise(time * 3.4f, 9f) - 0.5f) * amount;
             cameraPivot.localPosition = cameraPivotRest + new Vector3(x * 0.12f, y * 0.085f, z * 0.025f);
             cameraPivot.localRotation = Quaternion.Euler(y * 4.5f, x * 3.2f, z * 7f);
         }
