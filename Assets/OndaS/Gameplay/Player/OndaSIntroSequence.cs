@@ -24,7 +24,6 @@ namespace OndaS.Gameplay
         private GameObject sleepingPlayer, staminaUi, inventoryUi;
         private OndaSFirstEarthquake earthquake;
         private AudioSource alarm, music;
-        private AudioClip alarmClip;
         private Light screenLight, bedLight;
         private bool completed;
 
@@ -140,17 +139,14 @@ namespace OndaS.Gameplay
 
         private void CreateAlarm()
         {
-            const int rate = 22050; const float duration = 2f;
-            float[] samples = new float[(int)(rate * duration)];
-            for (int i = 0; i < samples.Length; i++)
+            var clip = Resources.Load<AudioClip>("Audio/SonidoAlarmaSismo");
+            if (clip != null)
             {
-                float t = (float)i / rate, phase = t % .5f;
-                float envelope = Mathf.Clamp01(phase / .015f) * Mathf.Clamp01((.32f - phase) / .035f);
-                float frequency = ((int)(t / .5f) % 2 == 0) ? 880f : 660f;
-                samples[i] = (Mathf.Sin(2f * Mathf.PI * frequency * t) * .23f + Mathf.Sin(2f * Mathf.PI * frequency * 2f * t) * .06f) * envelope;
+                if (clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
+                alarm = phone.gameObject.AddComponent<AudioSource>();
+                alarm.clip = clip; alarm.loop = true; alarm.playOnAwake = false; alarm.spatialBlend = 0f; alarm.volume = .7f;
             }
-            alarmClip = AudioClip.Create("OndaS - alerta sísmica", samples.Length, 1, rate, false); alarmClip.SetData(samples, 0);
-            alarm = phone.gameObject.AddComponent<AudioSource>(); alarm.clip = alarmClip; alarm.loop = true; alarm.playOnAwake = false; alarm.spatialBlend = 0f; alarm.volume = .7f;
+            else Debug.LogWarning("Intro: no se encontró el sonido de alarma sísmica.", this);
             var lightObject = new GameObject("Luz de pantalla"); lightObject.transform.SetParent(phone, false);
             screenLight = lightObject.AddComponent<Light>(); screenLight.type = LightType.Point; screenLight.range = 1f; screenLight.intensity = .7f;
             screenLight.color = new Color(1f, .65f, .3f); screenLight.enabled = false;
@@ -169,7 +165,6 @@ namespace OndaS.Gameplay
             if (sleepingPlayer != null) Destroy(sleepingPlayer);
             if (alarm != null) Destroy(alarm);
             if (music != null) { music.Stop(); Destroy(music); }
-            if (alarmClip != null) Destroy(alarmClip);
             if (screenLight != null) Destroy(screenLight.gameObject);
             if (bedLight != null) Destroy(bedLight.gameObject);
             if (staminaUi != null) staminaUi.SetActive(true);
