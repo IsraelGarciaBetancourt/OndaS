@@ -84,6 +84,8 @@ namespace OndaS.Visual
         private void Start()
         {
             controller = GetComponent<CharacterController>();
+            mouseSensitivity = PlayerPrefs.GetFloat("OndaS.MouseSensitivity", mouseSensitivity);
+            AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat("OndaS.MasterVolume", 1f));
             stamina = maxStamina;
             var hudObject = new GameObject("Stamina UI", typeof(RectTransform));
             staminaHud = hudObject.AddComponent<OndaSStaminaHud>();
