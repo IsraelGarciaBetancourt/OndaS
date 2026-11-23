@@ -474639,6 +474639,9 @@ MonoBehaviour:
   sleepingSeconds: 4
   alarmSeconds: 4
   wakeSeconds: 3.5
+  musicVolume: 0.009
+  musicStartSeconds: 80
+  musicFadeSeconds: 2.5
 --- !u!4 &1500055574
 Transform:
   m_ObjectHideFlags: 0

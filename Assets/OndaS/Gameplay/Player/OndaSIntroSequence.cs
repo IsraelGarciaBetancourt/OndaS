@@ -13,13 +13,17 @@ namespace OndaS.Gameplay
         [SerializeField, Min(0.1f)] private float sleepingSeconds = 4f;
         [SerializeField, Min(0.1f)] private float alarmSeconds = 4f;
         [SerializeField, Min(0.1f)] private float wakeSeconds = 3.5f;
+        [Header("Música de introducción")]
+        [SerializeField, Range(0f, 1f)] private float musicVolume = .12f;
+        [SerializeField, Min(0f)] private float musicStartSeconds = 84f;
+        [SerializeField, Min(0.1f)] private float musicFadeSeconds = 2.5f;
         public static bool IsPlaying { get; private set; }
         private Transform phone, screen, cameraTransform, cameraParent, visual;
         private Vector3 cameraLocalPosition, phonePosition;
         private Quaternion cameraLocalRotation;
         private GameObject sleepingPlayer, staminaUi, inventoryUi;
         private OndaSFirstEarthquake earthquake;
-        private AudioSource alarm;
+        private AudioSource alarm, music;
         private AudioClip alarmClip;
         private Light screenLight, bedLight;
         private bool completed;
@@ -74,6 +78,7 @@ namespace OndaS.Gameplay
             bedLight = bedLightObject.AddComponent<Light>(); bedLight.type = LightType.Point;
             bedLight.range = 3f; bedLight.intensity = 2.5f; bedLight.color = new Color(1f, .8f, .65f);
             CreateAlarm();
+            StartMusic();
             yield return Shot(new Vector3(27.9f, 30.3f, 7.2f), new Vector3(30.4f, 29.1f, 9.7f), sleepingSeconds, false);
             screen.gameObject.SetActive(true);
             if (alarm != null) alarm.Play();
@@ -91,6 +96,8 @@ namespace OndaS.Gameplay
             {
                 time += Time.deltaTime;
                 float t = Mathf.Clamp01(time / wakeSeconds);
+                if (music != null)
+                    music.volume = musicVolume * Mathf.Clamp01((wakeSeconds - time) / Mathf.Max(.1f, musicFadeSeconds));
                 float rise = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / .75f));
                 sleepingPlayer.transform.SetPositionAndRotation(Vector3.Lerp(startPosition, standing, rise), Quaternion.Slerp(startRotation, standingRotation, rise));
                 cameraTransform.position = cameraStart;
@@ -118,6 +125,17 @@ namespace OndaS.Gameplay
                     phone.localPosition = phonePosition + new Vector3(Mathf.Sin(time * 65f) * .0015f, 0f, Mathf.Sin(time * 53f) * .001f);
                 yield return null;
             }
+        }
+
+        private void StartMusic()
+        {
+            var clip = Resources.Load<AudioClip>("Audio/Nayeon-BabyAngel");
+            if (clip == null || clip.length <= musicStartSeconds)
+            { Debug.LogWarning("Intro: no se encontró la música o no llega al minuto indicado.", this); return; }
+            if (clip.loadState == AudioDataLoadState.Unloaded) clip.LoadAudioData();
+            music = gameObject.AddComponent<AudioSource>();
+            music.playOnAwake = false; music.spatialBlend = 0f; music.loop = false;
+            music.clip = clip; music.volume = musicVolume; music.time = musicStartSeconds; music.Play();
         }
 
         private void CreateAlarm()
@@ -150,6 +168,7 @@ namespace OndaS.Gameplay
             if (cameraTransform != null && cameraParent != null) { cameraTransform.localPosition = cameraLocalPosition; cameraTransform.localRotation = cameraLocalRotation; }
             if (sleepingPlayer != null) Destroy(sleepingPlayer);
             if (alarm != null) Destroy(alarm);
+            if (music != null) { music.Stop(); Destroy(music); }
             if (alarmClip != null) Destroy(alarmClip);
             if (screenLight != null) Destroy(screenLight.gameObject);
             if (bedLight != null) Destroy(bedLight.gameObject);
