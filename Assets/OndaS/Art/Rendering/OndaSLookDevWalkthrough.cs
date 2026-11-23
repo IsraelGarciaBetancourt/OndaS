@@ -248,7 +248,11 @@ namespace OndaS.Visual
                 yield break;
             }
             Vector3 interior = point.Interior.position - Vector3.up * standingBottom;
+            // Stepping up while crouched can make the controller collide with the table edge.
+            float previousStepOffset = controller.stepOffset;
+            controller.stepOffset = 0f;
             yield return MoveShelterPlayer(interior, 0.65f);
+            controller.stepOffset = previousStepOffset;
             sheltering = ReachedShelterPosition(interior);
             if (!sheltering) { shelterPoint = null; ShelterExitRequiresMovement = true; }
             shelterTransitioning = false;
@@ -266,7 +270,13 @@ namespace OndaS.Visual
             shelterTransitioning = true;
             Vector3 entrance = shelterPoint != null ? shelterPoint.EntryPosition - Vector3.up * standingBottom : transform.position;
             bool clear = IsShelterPositionClear(entrance);
-            if (clear) yield return MoveShelterPlayer(entrance, 0.65f);
+            if (clear)
+            {
+                float previousStepOffset = controller.stepOffset;
+                controller.stepOffset = 0f;
+                yield return MoveShelterPlayer(entrance, 0.65f);
+                controller.stepOffset = previousStepOffset;
+            }
             ShelterExitRequiresMovement = !clear || !ReachedShelterPosition(entrance) || !IsShelterPositionClear(entrance);
             sheltering = false;
             shelterPoint = null;
