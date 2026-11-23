@@ -3,6 +3,7 @@ using OndaS.Gameplay.Earthquake;
 using OndaS.Visual;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 namespace OndaS.Gameplay
 {
@@ -26,8 +27,22 @@ namespace OndaS.Gameplay
         private AudioSource alarm, music;
         private Light screenLight, bedLight;
         private bool completed;
+        private CanvasGroup openingCover;
 
-        private void Awake() { IsPlaying = true; }
+        private void Awake()
+        {
+            IsPlaying = true;
+            // Hide the first rendered frame while the gameplay camera and HUD initialize.
+            var cover = new GameObject("OndaS - Transición de introducción", typeof(RectTransform), typeof(Canvas), typeof(CanvasGroup));
+            cover.transform.SetParent(transform, false);
+            var canvas = cover.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay; canvas.sortingOrder = short.MaxValue;
+            openingCover = cover.GetComponent<CanvasGroup>(); openingCover.blocksRaycasts = false;
+            var fill = new GameObject("Negro", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+            var rect = fill.GetComponent<RectTransform>(); rect.SetParent(cover.transform, false);
+            rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
+            var image = fill.GetComponent<Image>(); image.color = Color.black; image.raycastTarget = false;
+        }
 
         private IEnumerator Start()
         {
@@ -120,6 +135,11 @@ namespace OndaS.Gameplay
             {
                 time += Time.deltaTime;
                 cameraTransform.SetPositionAndRotation(position, Quaternion.LookRotation(target - position));
+                if (!vibrate && openingCover != null)
+                {
+                    openingCover.alpha = 1f - Mathf.Clamp01(time / .4f);
+                    if (openingCover.alpha <= 0f) { Destroy(openingCover.gameObject); openingCover = null; }
+                }
                 if (vibrate && phone != null)
                     phone.localPosition = phonePosition + new Vector3(Mathf.Sin(time * 65f) * .0015f, 0f, Mathf.Sin(time * 53f) * .001f);
                 yield return null;
@@ -162,6 +182,7 @@ namespace OndaS.Gameplay
             if (phone != null) phone.localPosition = phonePosition;
             if (screen != null) screen.gameObject.SetActive(true);
             if (cameraTransform != null && cameraParent != null) { cameraTransform.localPosition = cameraLocalPosition; cameraTransform.localRotation = cameraLocalRotation; }
+            if (openingCover != null) Destroy(openingCover.gameObject);
             if (sleepingPlayer != null) Destroy(sleepingPlayer);
             if (alarm != null) Destroy(alarm);
             if (music != null) { music.Stop(); Destroy(music); }
