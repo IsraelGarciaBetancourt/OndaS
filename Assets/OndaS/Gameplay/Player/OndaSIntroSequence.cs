@@ -78,7 +78,7 @@ namespace OndaS.Gameplay
             screen.gameObject.SetActive(true);
             if (alarm != null) alarm.Play();
             if (screenLight != null) screenLight.enabled = true;
-            yield return Shot(new Vector3(32.28f, 29.65f, 9.90f), new Vector3(31.55f, 29.08f, 9.98f), alarmSeconds, true);
+            yield return Shot(new Vector3(32.40f, 29.44f, 9.91f), new Vector3(31.35f, 29.20f, 9.95f), alarmSeconds, true);
             if (alarm != null) alarm.Stop();
             phone.localPosition = phonePosition;
             if (screenLight != null) screenLight.enabled = false;
