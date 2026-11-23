@@ -150521,6 +150521,79 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7347258817844397980, guid: 4ddec33f57bc4c74680f805d105aa0cc, type: 3}
   m_PrefabInstance: {fileID: 461737846}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &461866725
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6195652356112476667, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_Name
+      value: OndaS - Celular mesa de noche
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 31.903
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 29.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 10.207
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.6963643
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.6963643
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.12278781
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.12278781
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
 --- !u!1001 &462108532
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -369565,7 +369638,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 40b228ed6653f442f8fedc062770b119, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.Earthquake.OndaSAftershock
   duration: 22
   initialShelterSeconds: 15
@@ -474534,6 +474607,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1017606091530846216, guid: c5be39b879c83f54d9bbfebe68c809be, type: 3}
   m_PrefabInstance: {fileID: 558553029}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1500055572
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1500055574}
+  - component: {fileID: 1500055573}
+  m_Layer: 0
+  m_Name: "OndaS - Introducci\xF3n despertar"
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1500055573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500055572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aaf701bd3f84457cbf8380ba740d9be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.OndaSIntroSequence
+  sleepingSeconds: 4
+  alarmSeconds: 4
+  wakeSeconds: 3.5
+--- !u!4 &1500055574
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500055572}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1500064908
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -690251,110 +690371,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1001 &461866725
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 6195652356112476667, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_Name
-      value: OndaS - Celular mesa de noche
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 31.99
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 29.075
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 10.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.6963643
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.6963643
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.12278781
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.12278781
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7467388462597998033, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 246a43e15d48f47e3ae4d696e0ea9afe, type: 3}
---- !u!1 &1500055572
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1500055574}
-  - component: {fileID: 1500055573}
-  m_Layer: 0
-  m_Name: "OndaS - Introducci\xF3n despertar"
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1500055573
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1500055572}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aaf701bd3f84457cbf8380ba740d9be, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::OndaS.Gameplay.OndaSIntroSequence
-  sleepingSeconds: 4
-  alarmSeconds: 4
-  wakeSeconds: 3.5
---- !u!4 &1500055574
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1500055572}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
