@@ -31,6 +31,7 @@ namespace OndaS.Visual
         [SerializeField, Min(0f)] private float staminaRecoveryDelay = 1f;
         [SerializeField, Range(0.01f, 1f)] private float exhaustedRecoveryFraction = 0.25f;
         private CharacterController controller;
+        private OndaS.Gameplay.OndaSFootsteps footsteps;
         private Light torch;
         private bool flashlightEquipped;
         private Light nightFill;
@@ -86,6 +87,7 @@ namespace OndaS.Visual
             controller = GetComponent<CharacterController>();
             mouseSensitivity = PlayerPrefs.GetFloat("OndaS.MouseSensitivity", mouseSensitivity);
             AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat("OndaS.MasterVolume", 1f));
+            footsteps = new OndaS.Gameplay.OndaSFootsteps(gameObject);
             stamina = maxStamina;
             var hudObject = new GameObject("Stamina UI", typeof(RectTransform));
             staminaHud = hudObject.AddComponent<OndaSStaminaHud>();
@@ -130,17 +132,23 @@ namespace OndaS.Visual
 
         private void Update()
         {
-            if (OndaS.Gameplay.OndaSIntroSequence.IsPlaying) return;
+            if (OndaS.Gameplay.OndaSIntroSequence.IsPlaying)
+            {
+                footsteps.ResetStride();
+                return;
+            }
             RemoveSprintShake();
             var keyboard = Keyboard.current;
             var mouse = Mouse.current;
             if (keyboard == null)
             {
+                footsteps.ResetStride();
                 UpdateStamina(false, false, Time.deltaTime);
                 return;
             }
             if (shelterTransitioning)
             {
+                footsteps.ResetStride();
                 UpdateStamina(false, false, Time.deltaTime);
                 if (keyboard.fKey.wasPressedThisFrame) ToggleFlashlight();
                 return;
@@ -164,10 +172,14 @@ namespace OndaS.Visual
             bool sprintHeld = keyboard.leftShiftKey.isPressed || keyboard.rightShiftKey.isPressed;
             bool wantsSprint = !IsCrouching && !crouchRequested && input.sqrMagnitude > 0f && sprintHeld;
             UpdateStamina(wantsSprint, sprintHeld, Time.deltaTime);
-            float moveSpeed = IsCrouching || crouchRequested ? crouchSpeed : IsSprinting ? sprintSpeed : speed;
+            bool crouching = IsCrouching || crouchRequested;
+            float moveSpeed = crouching ? crouchSpeed : IsSprinting ? sprintSpeed : speed;
             if (controller.isGrounded && verticalSpeed < 0) verticalSpeed = -2f;
             verticalSpeed += -15f * Time.deltaTime;
             controller.Move(((transform.right * input.x + transform.forward * input.y) * moveSpeed + Vector3.up * verticalSpeed) * Time.deltaTime);
+            Vector3 velocity = controller.velocity;
+            footsteps.UpdateMovement(new Vector2(velocity.x, velocity.z).magnitude, input != Vector2.zero,
+                controller.isGrounded, IsSprinting, crouching, Time.deltaTime);
             if (keyboard.bKey.wasPressedThisFrame && !seismicBlackout) SetBlackout(!blackout);
             if (keyboard.fKey.wasPressedThisFrame) ToggleFlashlight();
         }
@@ -551,6 +563,7 @@ namespace OndaS.Visual
 
         private void OnDisable()
         {
+            footsteps?.Stop();
             RemoveSprintShake();
             sprintShakeWeight = 0f;
             IsSprinting = false;
