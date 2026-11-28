@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using TMPro;
 using OndaS.Gameplay.UI;
 using OndaS.Gameplay.Items;
@@ -315,10 +316,30 @@ namespace OndaS.Gameplay
         }
         private void CreatePrompt()
         {
-            promptCanvas = new GameObject("Interaction UI", typeof(RectTransform), typeof(Canvas)); promptCanvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
-            var label = new GameObject("Prompt Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI)); label.transform.SetParent(promptCanvas.transform, false);
-            var rect = label.GetComponent<RectTransform>(); rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f); rect.sizeDelta = new Vector2(300, 65); rect.anchoredPosition = new Vector2(0, -55);
-            promptText = label.GetComponent<TextMeshProUGUI>(); OndaSTypography.Apply(promptText); promptText.fontSize = 18; promptText.enableAutoSizing = true; promptText.fontSizeMin = 12; promptText.fontSizeMax = 18; promptText.alignment = TextAlignmentOptions.Center; promptText.raycastTarget = false; promptCanvas.SetActive(false);
+            promptCanvas = new GameObject("Interaction UI", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
+            promptCanvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            var scaler = promptCanvas.GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            scaler.matchWidthOrHeight = 0.5f;
+
+            var label = new GameObject("Prompt Text", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+            label.transform.SetParent(promptCanvas.transform, false);
+            var rect = label.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.1f, 0.5f);
+            rect.anchorMax = new Vector2(0.9f, 0.5f);
+            rect.sizeDelta = new Vector2(0f, 110f);
+            rect.anchoredPosition = new Vector2(0f, -70f);
+
+            promptText = label.GetComponent<TextMeshProUGUI>();
+            OndaSTypography.Apply(promptText);
+            promptText.fontSize = 32f;
+            promptText.enableAutoSizing = true;
+            promptText.fontSizeMin = 24f;
+            promptText.fontSizeMax = 32f;
+            promptText.alignment = TextAlignmentOptions.Center;
+            promptText.raycastTarget = false;
+            promptCanvas.SetActive(false);
         }
     }
 }
