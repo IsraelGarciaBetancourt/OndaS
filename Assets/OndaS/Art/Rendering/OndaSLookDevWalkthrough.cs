@@ -32,6 +32,7 @@ namespace OndaS.Visual
         [SerializeField, Range(0.01f, 1f)] private float exhaustedRecoveryFraction = 0.25f;
         private CharacterController controller;
         private OndaS.Gameplay.OndaSFootsteps footsteps;
+        private OndaSPauseMenu pauseMenu;
         private Light torch;
         private bool flashlightEquipped;
         private Light nightFill;
@@ -81,13 +82,15 @@ namespace OndaS.Visual
         public float MaxStamina => maxStamina;
         public bool IsExhausted => exhausted;
         public bool IsBlackout => blackout;
+        public bool GameplayPaused => pauseMenu != null && pauseMenu.BlocksGameplay;
 
         private void Start()
         {
             controller = GetComponent<CharacterController>();
-            mouseSensitivity = PlayerPrefs.GetFloat("OndaS.MouseSensitivity", mouseSensitivity);
-            AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat("OndaS.MasterVolume", 1f));
+            mouseSensitivity = OndaSGameSettings.GetSensitivity(mouseSensitivity);
+            AudioListener.volume = OndaSGameSettings.MasterVolume;
             footsteps = new OndaS.Gameplay.OndaSFootsteps(gameObject);
+            pauseMenu = gameObject.AddComponent<OndaSPauseMenu>();
             stamina = maxStamina;
             var hudObject = new GameObject("Stamina UI", typeof(RectTransform));
             staminaHud = hudObject.AddComponent<OndaSStaminaHud>();
@@ -132,6 +135,7 @@ namespace OndaS.Visual
 
         private void Update()
         {
+            if (GameplayPaused) return;
             if (OndaS.Gameplay.OndaSIntroSequence.IsPlaying)
             {
                 footsteps.ResetStride();
@@ -155,7 +159,6 @@ namespace OndaS.Visual
             }
             if (!sheltering && keyboard.cKey.wasPressedThisFrame) crouchRequested = !crouchRequested;
             if (!sheltering) UpdatePosture();
-            if (keyboard.escapeKey.wasPressedThisFrame) { Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
             if (mouse != null && mouse.leftButton.wasPressedThisFrame && Cursor.lockState != CursorLockMode.Locked)
             { Cursor.lockState = CursorLockMode.Locked; Cursor.visible = false; }
             if (mouse != null && Cursor.lockState == CursorLockMode.Locked && !OndaSBackpackRadial.IsOpen)
@@ -186,7 +189,7 @@ namespace OndaS.Visual
 
         private void LateUpdate()
         {
-            if (viewCamera == null || controller == null) return;
+            if (GameplayPaused || viewCamera == null || controller == null) return;
             Vector3 velocity = controller.velocity;
             bool running = IsSprinting && new Vector2(velocity.x, velocity.z).sqrMagnitude > 0.25f;
             sprintShakeWeight = Mathf.MoveTowards(sprintShakeWeight, running ? 1f : 0f, sprintShakeTransition * Time.deltaTime);
@@ -208,6 +211,8 @@ namespace OndaS.Visual
             if (viewCamera != null) viewCamera.transform.localRotation *= Quaternion.Inverse(appliedSprintShake);
             appliedSprintShake = Quaternion.identity;
         }
+
+        internal void SetMouseSensitivity(float value) => mouseSensitivity = value;
 
         public void SetFlashlightEquipped(bool equipped)
         {

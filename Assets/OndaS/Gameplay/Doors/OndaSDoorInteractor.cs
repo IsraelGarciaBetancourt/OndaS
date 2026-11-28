@@ -58,6 +58,12 @@ namespace OndaS.Gameplay
         }
         private void Update()
         {
+            if (playerMovement != null && playerMovement.GameplayPaused)
+            {
+                CancelRadial();
+                if (promptCanvas != null) promptCanvas.SetActive(false);
+                return;
+            }
             if (OndaSIntroSequence.IsPlaying) { ShowPrompt(null); return; }
             if (heldVisual != null && playerMovement != null)
                 heldVisual.SetActive(playerMovement.enabled);

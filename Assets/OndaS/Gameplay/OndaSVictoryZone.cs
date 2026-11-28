@@ -49,7 +49,7 @@ namespace OndaS.Gameplay
         {
             if (won || !(other is CharacterController)) return;
             var player = other.GetComponent<OndaSLookDevWalkthrough>();
-            if (player == null || !player.isActiveAndEnabled) return;
+            if (player == null || !player.isActiveAndEnabled || player.GameplayPaused) return;
 
             won = true;
             previousTimeScale = Time.timeScale;

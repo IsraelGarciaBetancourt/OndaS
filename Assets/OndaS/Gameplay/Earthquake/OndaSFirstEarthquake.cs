@@ -212,6 +212,7 @@ namespace OndaS.Gameplay.Earthquake
                     SceneManager.LoadScene(gameObject.scene.path);
                 return;
             }
+            if (playerMovement != null && playerMovement.GameplayPaused) return;
             if (finished) { UpdateDust(); return; }
             if (!started)
             {

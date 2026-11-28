@@ -85,7 +85,7 @@ namespace OndaS.Gameplay.Electrical
         {
             if (!IsEnergized || !(other is CharacterController)) return;
             var movement = other.GetComponent<OndaSLookDevWalkthrough>();
-            if (movement == null || !movement.isActiveAndEnabled) return;
+            if (movement == null || !movement.isActiveAndEnabled || movement.GameplayPaused) return;
             earthquake.DefeatByElectricalHazard();
         }
 

@@ -170,6 +170,7 @@ namespace OndaS.Gameplay.Earthquake
 
         private void LateUpdate()
         {
+            if (movement != null && movement.GameplayPaused) return;
             // The earthquake moves the camera's parent; keep the cinematic view fixed.
             if (inCutscene && playerCamera != null)
                 playerCamera.transform.SetPositionAndRotation(cutscenePosition, cutsceneRotation);

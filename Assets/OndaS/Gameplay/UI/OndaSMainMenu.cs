@@ -1,19 +1,18 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static OndaS.Gameplay.UI.OndaSMenuUi;
 
 namespace OndaS.Gameplay.UI
 {
     public sealed class OndaSMainMenu : MonoBehaviour
     {
         [SerializeField] private Texture2D background;
+        internal const string ScenePath = "Assets/OndaS/Art/Scenes/OndaS_MenuPrincipal.unity";
         private const string GameScene = "Assets/OndaS/Art/Scenes/OndaS_RetroEdificio.unity";
-        private static readonly Color Paper = new Color32(225, 218, 200, 255);
-        private static readonly Color Red = new Color32(170, 53, 45, 255);
         private RectTransform canvas;
         private GameObject mainPanel, settingsPanel;
         private Button playButton, backButton;
@@ -22,7 +21,7 @@ namespace OndaS.Gameplay.UI
         private void Awake()
         {
             Cursor.lockState = CursorLockMode.None; Cursor.visible = true;
-            AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat("OndaS.MasterVolume", 1f));
+            AudioListener.volume = OndaSGameSettings.MasterVolume;
             BuildMenu();
         }
 
@@ -73,24 +72,11 @@ namespace OndaS.Gameplay.UI
             Text(panel, "Título", "CONFIGURACIÓN", new Vector2(75,-80), new Vector2(900,110), 76, Paper);
             Image(panel,"Acento rojo",new Vector2(82,-222),new Vector2(92,5),Red);
             Text(panel, "Volumen título", "VOLUMEN GENERAL", new Vector2(83,-300), new Vector2(650,60), 39, Paper);
-            MakeSlider(panel, -390, 0f, 1f, Mathf.Clamp01(PlayerPrefs.GetFloat("OndaS.MasterVolume",1f)), value => { AudioListener.volume = value; PlayerPrefs.SetFloat("OndaS.MasterVolume", value); PlayerPrefs.Save(); }, value => Mathf.RoundToInt(value*100)+"%");
+            AddVolumeSlider(panel, new Vector2(84, -390));
             Text(panel, "Ratón título", "SENSIBILIDAD DEL RATÓN", new Vector2(83,-500), new Vector2(740,60), 39, Paper);
-            MakeSlider(panel, -590, .03f, .3f, Mathf.Clamp(PlayerPrefs.GetFloat("OndaS.MouseSensitivity",.1f),.03f,.3f), value => { PlayerPrefs.SetFloat("OndaS.MouseSensitivity",value); PlayerPrefs.Save(); }, value => Mathf.RoundToInt(value*1000).ToString());
+            AddSensitivitySlider(panel, new Vector2(84, -590));
             backButton = MenuButton(panel, "‹", "VOLVER", -770, ShowMain);
             Text(panel, "Pista", "ESC PARA VOLVER", new Vector2(82,-1005), new Vector2(650,34), 20, new Color32(157,151,138,210));
-        }
-        private void MakeSlider(RectTransform parent, float y, float min, float max, float value, UnityEngine.Events.UnityAction<float> action, System.Func<float,string> format)
-        {
-            var root = Image(parent,"Control",new Vector2(84,y),new Vector2(600,52),new Color(0,0,0,.35f));
-            var slider = root.gameObject.AddComponent<Slider>(); slider.minValue=min; slider.maxValue=max;
-            var track = Image(root.rectTransform,"Pista",new Vector2(18,-23),new Vector2(450,6),new Color32(90,84,78,255));
-            var fill = Image(track.rectTransform,"Nivel",Vector2.zero,Vector2.zero,Red,true); slider.fillRect = fill.rectTransform;
-            var handleArea = new GameObject("Área selector",typeof(RectTransform)).GetComponent<RectTransform>(); handleArea.SetParent(track.transform,false);
-            handleArea.anchorMin=Vector2.zero; handleArea.anchorMax=Vector2.one; handleArea.offsetMin=handleArea.offsetMax=Vector2.zero;
-            var knob = Image(handleArea,"Selector",Vector2.zero,new Vector2(14,26),Paper); knob.rectTransform.anchorMin=knob.rectTransform.anchorMax=new Vector2(0,.5f); knob.rectTransform.pivot=new Vector2(.5f,.5f);
-            slider.handleRect=knob.rectTransform; slider.targetGraphic=knob; slider.value=value;
-            var number = Text(root.rectTransform,"Valor",format(value),new Vector2(490,-7),new Vector2(100,40),28,Paper);
-            slider.onValueChanged.AddListener(v => { number.text=format(v); action(v); });
         }
         private GameObject Panel(string name)
         {
@@ -113,20 +99,6 @@ namespace OndaS.Gameplay.UI
             var rect = go.GetComponent<RectTransform>(); rect.SetParent(parent, false);
             rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one; rect.offsetMin = rect.offsetMax = Vector2.zero;
             var image = go.GetComponent<RawImage>(); image.texture = texture; image.raycastTarget = false; return image;
-        }
-        private Image Image(RectTransform parent,string name,Vector2 position,Vector2 size,Color color,bool stretch=false)
-        {
-            var go=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer),typeof(Image)); var rect=go.GetComponent<RectTransform>(); rect.SetParent(parent,false);
-            if(stretch) { rect.anchorMin=Vector2.zero; rect.anchorMax=Vector2.one; rect.offsetMin=rect.offsetMax=Vector2.zero; }
-            else { rect.anchorMin=rect.anchorMax=new Vector2(0,1); rect.pivot=new Vector2(0,1); rect.anchoredPosition=position; rect.sizeDelta=size; }
-            var image=go.GetComponent<Image>(); image.color=color; return image;
-        }
-        private TextMeshProUGUI Text(RectTransform parent,string name,string value,Vector2 pos,Vector2 size,float fontSize,Color color)
-        {
-            var go=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer),typeof(TextMeshProUGUI)); var rect=go.GetComponent<RectTransform>(); rect.SetParent(parent,false);
-            rect.anchorMin=rect.anchorMax=new Vector2(0,1); rect.pivot=new Vector2(0,1); rect.anchoredPosition=pos; rect.sizeDelta=size;
-            var text=go.GetComponent<TextMeshProUGUI>(); OndaSTypography.Apply(text); text.text=value; text.fontSize=fontSize; text.color=color; text.alignment=TextAlignmentOptions.MidlineLeft; text.raycastTarget=false; text.enableWordWrapping=false;
-            return text;
         }
         private static Texture2D CreateShade()
         {

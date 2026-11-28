@@ -55,6 +55,7 @@ namespace OndaS.Gameplay.Earthquake
         {
             if (!active) return;
             if (earthquake == null || player == null || earthquake.IsDefeated) { Finish(); return; }
+            if (player.GameplayPaused) return;
             elapsed += Time.deltaTime;
             bool sheltered = player.IsSheltering;
             if (sheltered) { hasSheltered = true; exposed = 0f; }
